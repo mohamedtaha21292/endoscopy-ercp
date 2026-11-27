@@ -402,8 +402,8 @@ details.steps div{margin-top:6px;font-size:11px;color:var(--grey);line-height:1.
   </div>
 
   <div class="actions">
-    <button class="act primary" id="addCase"><span class="ic">＋</span><b>تسجيل حالة ERCP جديدة</b><span>اختار الأدوات المستخدمة والكميات</span></button>
-    <button class="act" data-go="cases"><span class="ic">≡</span><b>الحالات</b><span id="cCountSmall">—</span></button>
+    <button class="act primary" id="addCase"><span class="ic">＋</span><b>تسجيل صرف اليوم</b><span>اختار الأدوات والكميات اللي اتاخدت</span></button>
+    <button class="act" data-go="cases"><span class="ic">≡</span><b>الصرف</b><span id="cCountSmall">—</span></button>
     <button class="act" data-go="store"><span class="ic">▤</span><b>المخزن</b><span id="iCountSmall">—</span></button>
     <button class="act" data-go="rep"><span class="ic">▦</span><b>التقارير</b><span>الاستهلاك والقيمة</span></button>
     <button class="act" id="backup"><span class="ic">↓</span><b>نسخة احتياطية</b><span>تنزيل / استرجاع</span></button>
@@ -427,7 +427,7 @@ details.steps div{margin-top:6px;font-size:11px;color:var(--grey);line-height:1.
     <summary>خطوات الاستخدام</summary>
     <div>
       1. سجّل الأدوات في «المخزن»: الكمية، الإعداد الثابت، الصلاحية، وسعر الوحدة.<br />
-      2. بعد كل حالة اضغط «تسجيل حالة جديدة» واختار الأدوات والكميات.<br />
+      2. كل ما تصرف أدوات، اضغط «تسجيل صرف اليوم» واختار الأدوات والكميات.<br />
       3. الرصيد بيتخصم لوحده، و«+ كمية» بتضيف للمخزن في أي وقت.<br />
       4. «التقارير» بيوريك استهلاك كل صنف وقيمته والباقي منه.
     </div>
@@ -438,8 +438,8 @@ details.steps div{margin-top:6px;font-size:11px;color:var(--grey);line-height:1.
 <div class="screen" id="s-cases">
   <div class="topbar">
     <button class="icobtn" data-go="home">‹ رجوع</button>
-    <div class="tt">الحالات<small id="caseCount"></small></div>
-    <button class="icobtn" id="addCase2">+ جديدة</button>
+    <div class="tt">الصرف اليومي<small id="caseCount"></small></div>
+    <button class="icobtn" id="addCase2">+ صرف</button>
   </div>
   <div id="caseList"></div>
 </div>
@@ -475,7 +475,7 @@ details.steps div{margin-top:6px;font-size:11px;color:var(--grey);line-height:1.
   </div>
   <div class="panel" style="padding:0;overflow:auto"><table class="rep" id="repTable"></table></div>
   <div class="panel">
-    <div class="row"><span class="grow muted">إجمالي الحالات في الفترة</span><b id="repCases" style="color:var(--dark)">0</b></div>
+    <div class="row"><span class="grow muted">عدد عمليات الصرف</span><b id="repCases" style="color:var(--dark)">0</b></div>
     <div class="row" style="margin-top:6px"><span class="grow muted">إجمالي قيمة المستهلك</span><b id="repTotal" style="color:var(--dark)">0</b></div>
   </div>
 </div>
@@ -622,7 +622,7 @@ function renderHome(){
   const low = items.filter(i=>parOf(i)>0 && balanceOf(i) < parOf(i)).length;
   const noPrices = items.length>0 && items.every(i=>n(i.price)===0);
   const kpis = [
-    [S.cases.length,'حالة مسجلة',''],
+    [S.cases.length,'عملية صرف',''],
     [usedQty,'أداة مستخدمة',''],
     [noPrices ? '—' : fmt(Math.round(value)), noPrices ? 'قيمة المستهلك (ضيف الأسعار)' : 'قيمة المستهلك (ج.م)',''],
     [exp,'منتهي الصلاحية', exp?'alert':''],
@@ -644,25 +644,25 @@ $('#clearSamples').onclick = ()=>{
   save(); renderAll(); toast('تم المسح — ابدأ بإضافة أدواتك');
 };
 
-/* ---------- cases ---------- */
+/* ---------- daily usage ---------- */
 function renderCases(){
   const box = $('#caseList');
   const rows = S.cases.slice().sort((a,b)=> (b.date||'').localeCompare(a.date||'') || (n(b.no)-n(a.no)));
-  $('#caseCount').textContent = rows.length ? rows.length+' حالة' : '';
-  if(!rows.length){ box.innerHTML = '<div class="panel muted" style="text-align:center">مفيش حالات مسجلة. اضغط «تسجيل حالة ERCP جديدة».</div>'; return; }
+  $('#caseCount').textContent = rows.length ? rows.length+' صرف' : '';
+  if(!rows.length){ box.innerHTML = '<div class="panel muted" style="text-align:center">مفيش صرف مسجل. اضغط «+ صرف».</div>'; return; }
   box.innerHTML = rows.map(c=>{
-    const lines = (c.lines||[]).map(l=>`${itemName(l.itemId)} × ${fmt(l.qty)}`).join(' · ');
+    const lines = (c.lines||[]).map(l=>`${itemName(l.itemId)} <b>× ${fmt(l.qty)}</b>`).join(' · ');
+    const qty = (c.lines||[]).reduce((s,l)=>s+n(l.qty),0);
+    const cost = caseCost(c);
     return `<div class="case">
       <div class="hd2">
-        <span class="no">حالة ${n(c.no)}</span>
-        <span class="dt">${dmy(c.date)}</span>
+        <span class="no">${dmy(c.date)}</span>
+        <span class="dt">${fmt(qty)} أداة</span>
         <span class="grow"></span>
-        <span class="ty">${c.type||''}</span>
+        ${cost>0?`<span class="ty">${money(cost)}</span>`:''}
       </div>
-      <div class="muted" style="font-size:12px;margin-top:2px">${c.room||''}${c.operator?' · '+c.operator:''}</div>
       <div class="lns">${lines||'—'}</div>
-      ${c.note?`<div class="muted" style="font-size:12px;margin-top:4px">ملاحظات: ${c.note}</div>`:''}
-      <div class="tot"><span class="muted">قيمة الأدوات</span><b>${money(caseCost(c))}</b></div>
+      ${c.note?`<div class="muted" style="font-size:11.5px;margin-top:3px">${c.note}</div>`:''}
       <div class="acts">
         <button data-cedit="${c.id}">تعديل</button>
         <button data-cdel="${c.id}">حذف</button>
@@ -672,9 +672,9 @@ function renderCases(){
   box.querySelectorAll('[data-cedit]').forEach(b=>b.onclick=()=>caseModal(b.dataset.cedit));
   box.querySelectorAll('[data-cdel]').forEach(b=>b.onclick=()=>{
     const c = S.cases.find(x=>x.id===b.dataset.cdel);
-    if(!confirm(`حذف الحالة ${n(c.no)}؟ الأدوات هترجع للمخزن.`)) return;
+    if(!confirm(`حذف صرف ${dmy(c.date)}؟ الأدوات هترجع للمخزن.`)) return;
     S.cases = S.cases.filter(x=>x.id!==c.id);
-    save(); renderAll(); toast('تم حذف الحالة');
+    save(); renderAll(); toast('تم حذف الصرف');
   });
 }
 
@@ -691,48 +691,31 @@ function lineRowHtml(sel, qty){
 }
 function caseModal(id){
   const c = id ? S.cases.find(x=>x.id===id)
-    : {id:'', no:'', date:todayISO(), room:'غرفة المناظير 1', type:TYPES[0], operator:'', lines:[{itemId:'', qty:1}], note:''};
+    : {id:'', no:'', date:todayISO(), lines:[{itemId:'', qty:1}], note:''};
   const nextNo = S.cases.reduce((m,x)=>Math.max(m, n(x.no)), 0) + 1;
   openModal(`
-    <h3>${id?('تعديل الحالة '+n(c.no)):('حالة ERCP جديدة — رقم '+nextNo)}</h3>
-    <div class="grid2">
-      <label class="field"><span>التاريخ</span><input type="date" id="c_date" value="${c.date||''}" /></label>
-      <label class="field"><span>الغرفة / المكان</span><input id="c_room" value="${(c.room||'').replace(/"/g,'&quot;')}" /></label>
-    </div>
-    <div class="grid2">
-      <label class="field"><span>نوع الإجراء</span><select id="c_type">${TYPES.map(t=>`<option ${t===c.type?'selected':''}>${t}</option>`).join('')}</select></label>
-      <label class="field"><span>القائم بالإجراء</span><input id="c_op" value="${(c.operator||'').replace(/"/g,'&quot;')}" placeholder="د. …" /></label>
-    </div>
-    <div class="field"><span>الأدوات المستخدمة</span></div>
+    <h3>${id?('تعديل صرف '+dmy(c.date)):'تسجيل صرف جديد'}</h3>
+    <label class="field"><span>التاريخ</span><input type="date" id="c_date" value="${c.date||''}" /></label>
+    <div class="field"><span>الأدوات اللي اتاخدت</span></div>
     <div id="lines">${(c.lines||[]).map(l=>lineRowHtml(l.itemId, l.qty)).join('')}</div>
     <button class="addline" id="addLine">+ إضافة أداة</button>
-    <label class="field" style="margin-top:10px"><span>ملاحظات (اختياري)</span><input id="c_note" value="${(c.note||'').replace(/"/g,'&quot;')}" /></label>
-    <div id="c_total" class="muted" style="margin-bottom:6px"></div>
+    <label class="field" style="margin-top:10px"><span>ملاحظات (اختياري)</span><input id="c_note" value="${(c.note||'').replace(/"/g,'&quot;')}" placeholder="مثال: حالة طارئة" /></label>
     <div class="foot">
       <button class="btn ghost" onclick="closeModal()">إلغاء</button>
-      <button class="btn" id="c_save">حفظ الحالة</button>
+      <button class="btn" id="c_save">حفظ وخصم من الرصيد</button>
     </div>`);
   const linesBox = $('#lines');
-  const recalc = ()=>{
-    let t = 0;
-    linesBox.querySelectorAll('.line-row').forEach(r=>{
-      const it = S.items.find(x=>x.id===r.querySelector('.litem').value);
-      if(it) t += n(it.price)*n(r.querySelector('.lqty').value);
-    });
-    $('#c_total').innerHTML = 'قيمة الأدوات في الحالة: <b style="color:var(--dark)">'+money(t)+'</b>';
-  };
   const bind = ()=>{
-    linesBox.querySelectorAll('.lrm').forEach(b=>b.onclick=()=>{ b.closest('.line-row').remove(); recalc(); });
-    linesBox.querySelectorAll('.litem,.lqty').forEach(e=>e.onchange = recalc);
+    linesBox.querySelectorAll('.lrm').forEach(b=>b.onclick=()=>{ b.closest('.line-row').remove(); });
   };
-  bind(); recalc();
+  bind();
   $('#addLine').onclick = ()=>{
     linesBox.insertAdjacentHTML('beforeend', lineRowHtml('', ''));
-    bind(); recalc();
+    bind();
   };
   $('#c_save').onclick = ()=>{
     const date = $('#c_date').value;
-    if(!date){ toast('اكتب تاريخ الحالة'); return; }
+    if(!date){ toast('اكتب التاريخ'); return; }
     const lines = [];
     let problem = null;
     linesBox.querySelectorAll('.line-row').forEach(r=>{
@@ -744,24 +727,21 @@ function caseModal(id){
     });
     if(problem){ toast(problem); return; }
     if(!lines.length){ toast('اختار أداة واحدة على الأقل'); return; }
-    // warnings (not blocks)
     for(const l of lines){
       const it = S.items.find(x=>x.id===l.itemId);
       if(!it) continue;
       const others = id ? usedOf(it.id) - n(((c.lines||[]).find(x=>x.itemId===it.id)||{}).qty) : usedOf(it.id);
       const avail = n(it.opening) + receivedOf(it.id) - others;
       const st = expState(it);
-      if(st.key==='exp' && !confirm(`«${it.ar}» منتهي الصلاحية (${dmy(it.exp)}). أسجّل الحالة برضه؟`)) return;
-      if(st.key==='near' && !confirm(`«${it.ar}» قريب الانتهاء (${dmy(it.exp)}). أسجّل الحالة برضه؟`)) return;
-      if(l.qty > avail && !confirm(`المتاح من «${it.ar}» ${fmt(avail)} بس. أسجّل برضه؟`)) return;
+      if(st.key==='exp' && !confirm(`«${it.ar}» منتهي الصلاحية (${dmy(it.exp)}). أسجل الصرف برضه؟`)) return;
+      if(st.key==='near' && !confirm(`«${it.ar}» قريب الانتهاء (${dmy(it.exp)}). أسجل الصرف برضه؟`)) return;
+      if(l.qty > avail && !confirm(`المتاح من «${it.ar}» ${fmt(avail)} بس. أسجل برضه؟`)) return;
     }
-    const rec = {id: c.id || uid(), no: n(c.no) || nextNo, date,
-      room: $('#c_room').value.trim(), type: $('#c_type').value,
-      operator: $('#c_op').value.trim(), lines, note: $('#c_note').value.trim()};
+    const rec = {id: c.id || uid(), no: n(c.no) || nextNo, date, lines, note: $('#c_note').value.trim()};
     if(c.id){ const i = S.cases.findIndex(x=>x.id===c.id); S.cases[i] = rec; }
     else S.cases.push(rec);
     save(); closeModal(); renderAll();
-    toast('تم تسجيل الحالة — الرصيد اتخصم');
+    toast('تم تسجيل الصرف — الرصيد اتخصم');
   };
 }
 $('#addCase').onclick = ()=>caseModal(null);
@@ -995,7 +975,7 @@ renderAll();
 
 /* ---------- auto-update: pull a newer build without reinstalling ---------- */
 (function(){
-  const BUILD = '2026-11-27-4';
+  const BUILD = '2026-11-27-5';
   window.APP_BUILD = BUILD;
   function check(){
     const url = location.pathname + '?_=' + Date.now();
