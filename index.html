@@ -376,6 +376,147 @@ html:has(body.welcome){background:#EAF3F2}
 #s-welcome .wcard .btn{width:100%;margin-top:10px;padding:11px;font-size:15px;border-radius:10px;background:var(--petrol)}
 #s-welcome .smallnote{background:#fff;border-radius:10px;padding:8px;margin-top:7px;font-size:11px;color:var(--grey);text-align:center;box-shadow:none}
 
+/* ===== v4: bigger type, calmer layout (build 7) ===== */
+body{font-size:17px;line-height:1.6}
+.screen{padding:12px 12px 22px;max-width:640px}
+.panel{padding:14px;border-radius:14px;margin-bottom:12px}
+.panel h2{font-size:16px}
+.muted{font-size:13.5px}
+
+/* topbar */
+.topbar{padding:8px 2px;margin-bottom:12px;gap:10px}
+.topbar .tt{font-size:19px;font-weight:800;line-height:1.25;color:#fff}
+.topbar .tt small{font-size:12.5px;color:#B9DAD6;margin-top:3px;font-weight:400;line-height:1.4}
+.icobtn{min-height:44px;padding:0 14px;font-size:14.5px;border-radius:11px;
+  display:inline-flex;align-items:center;justify-content:center}
+
+/* home: one status card */
+.hstat{display:flex;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:14px;
+  margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.12);border:1px solid rgba(255,255,255,.16);cursor:pointer}
+.hstat .ico{width:46px;height:46px;flex:0 0 46px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:22px;font-weight:800;background:#E7F3F2;color:var(--petrol)}
+.hstat .txt{flex:1;min-width:0}
+.hstat .t{font-size:17px;font-weight:800;color:var(--petrol-d);line-height:1.3}
+.hstat .s{font-size:13.5px;color:var(--grey);margin-top:3px;line-height:1.45}
+.hstat .go{background:none;border:0;color:var(--petrol);font-size:24px;padding:4px 2px;line-height:1}
+.hstat.warn{background:#FDF6E7;border-color:#E8C98A}
+.hstat.warn .ico{background:#F7E4B8;color:#8A5A00}
+.hstat.warn .t{color:#7A4E00}
+.hstat.danger{background:#FDF0EE;border-color:#E7B7B0}
+.hstat.danger .ico{background:#F8D9D4;color:#A31B12}
+.hstat.danger .t{color:#A31B12}
+.hstat.ok .t{color:#1F6B33}
+
+/* home: primary action */
+.bigact{width:100%;display:flex;align-items:center;gap:14px;background:#fff;border:0;border-radius:14px;
+  padding:16px;margin-bottom:12px;box-shadow:0 3px 14px rgba(0,0,0,.18);text-align:right}
+.bigact .ico{width:50px;height:50px;border-radius:50%;background:var(--petrol);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 50px;line-height:1}
+.bigact .txt{flex:1;min-width:0}
+.bigact .t{display:block;font-size:19px;font-weight:800;color:var(--petrol-d);line-height:1.25}
+.bigact .s{display:block;font-size:13.5px;color:var(--grey);margin-top:2px}
+
+/* home: three tiles */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.tile{background:#fff;border:0;border-radius:14px;padding:14px 8px;box-shadow:0 2px 10px rgba(0,0,0,.12);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:100px}
+.tile .ic{font-size:22px;color:var(--petrol);line-height:1}
+.tile b{font-size:15.5px;color:var(--petrol-d);font-weight:800}
+.tile span{font-size:12px;color:var(--grey);line-height:1.3}
+
+/* home: four KPIs on petrol */
+.kpis4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kpis4 .k{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:14px;padding:14px}
+.kpis4 .k b{display:block;font-size:26px;font-weight:800;color:#fff;line-height:1.15}
+.kpis4 .k span{display:block;font-size:13px;color:#CDE5E2;margin-top:3px}
+.kpis4 .k.alert{background:#7C2C23;border-color:#B96A5F}
+.kpis4 .k.alert b{color:#FFE4DF}
+.kpis4 .k.warn{background:#6D4B13;border-color:#C2A05F}
+.kpis4 .k.warn b{color:#FFEDC9}
+
+.morebtn{width:100%;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.26);color:#fff;
+  border-radius:12px;padding:15px;font-size:15.5px;font-weight:700;min-height:52px;margin-bottom:10px}
+
+/* alerts screen */
+.alertrow{display:flex;align-items:center;gap:8px;padding:13px 0;border-top:1px solid #E3EFED;font-size:15px;flex-wrap:wrap}
+.alertrow:first-child{border-top:0}
+.alertrow .nm{flex:1;min-width:130px;font-weight:800;color:var(--dark);font-size:16px}
+.chip{font-size:12.5px;padding:4px 10px;border-radius:20px}
+
+/* store */
+.newitem{width:100%;background:#fff;color:var(--petrol);border:2px solid var(--petrol);border-radius:14px;
+  padding:14px;font-size:17px;font-weight:800;margin-bottom:12px;min-height:54px}
+.toolbar input{padding:13px;font-size:16px;border-radius:12px}
+.srow{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.10);
+  border-inline-start:4px solid var(--mid)}
+.srow.exp{border-inline-start-color:var(--red-t)}
+.srow.near{border-inline-start-color:#D79A1B}
+.srow.low{border-inline-start-color:#C4453A}
+.srow .l1{display:flex;gap:12px;align-items:flex-start}
+.srow .nm{flex:1;min-width:0}
+.srow .nm b{display:block;font-size:17.5px;font-weight:800;color:var(--petrol-d);line-height:1.3}
+.srow .nm i{display:block;font-size:12.5px;color:var(--grey);font-style:normal;direction:ltr;
+  text-align:right;margin-top:3px}
+.srow .qty{text-align:center;min-width:76px}
+.srow .qty b{display:block;font-size:25px;font-weight:800;color:var(--petrol-d);line-height:1.1}
+.srow .qty span{font-size:12px;color:var(--grey)}
+.srow .bar{height:7px;border-radius:4px;background:#E3EFED;margin-top:11px;overflow:hidden}
+.srow .bar i{display:block;height:100%;background:var(--mid);border-radius:4px}
+.srow .bar.low i{background:#C4453A}
+.srow .bar.near i{background:#D79A1B}
+.srow .bar.exp i{background:#A31B12}
+.srow .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.srow .row2{display:flex;gap:8px;margin-top:13px;align-items:center}
+.srow .row2 .add{flex:1;background:var(--petrol);color:#fff;border:0;border-radius:11px;padding:13px;
+  font-size:16px;font-weight:800;min-height:48px}
+.srow .row2 .menu{width:48px;height:48px;flex:0 0 48px;border-radius:11px;border:1.5px solid rgba(17,107,102,.35);
+  background:#fff;color:var(--petrol);font-size:22px;line-height:1;padding:0}
+
+/* option sheet (item menu / more) */
+.menuopt{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:1px solid #DCEBE9;
+  border-radius:12px;padding:15px;margin-bottom:10px;font-size:16.5px;font-weight:700;color:var(--petrol-d);
+  min-height:54px;text-align:right}
+.menuopt .ic{width:36px;height:36px;flex:0 0 36px;border-radius:9px;background:#E7F3F2;color:var(--petrol);
+  display:flex;align-items:center;justify-content:center;font-size:18px}
+.menuopt.danger{color:var(--red-t)}
+.menuopt.danger .ic{background:#FBE0DE;color:var(--red-t)}
+.sheet h3{font-size:19px;margin-bottom:14px}
+.sheet{padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet .foot{gap:10px;margin-top:14px}
+.btn{padding:14px;font-size:16.5px;border-radius:12px;min-height:50px}
+.btn.small{padding:11px 14px;font-size:15px;min-height:44px}
+.field span{font-size:13.5px;margin-bottom:6px}
+.field input,.field select,.field textarea{padding:13px;font-size:16px;border-radius:11px}
+.field{margin-bottom:12px}
+.grid2{gap:10px}
+
+/* cases */
+.case{padding:14px;border-radius:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.10)}
+.case .no{font-size:13px;padding:3px 9px}
+.case .dt{font-size:13px}
+.case .ty{font-size:14px}
+.case .lns{font-size:15px;line-height:1.75;margin-top:8px}
+.case .acts{gap:8px;margin-top:12px}
+.case .acts button{padding:12px;font-size:14.5px;min-height:44px;border-radius:10px}
+.line-row{grid-template-columns:1fr 78px 34px;gap:8px;margin-bottom:10px}
+.line-row select,.line-row input{padding:13px;font-size:15.5px;border-radius:11px}
+.addline{padding:13px;font-size:15px;border-radius:11px}
+
+/* reports + help */
+.rep{font-size:14px}
+.rep th{font-size:12.5px;padding:10px 6px}
+.rep td{padding:10px 6px}
+details.steps{padding:12px 14px;border-radius:12px}
+details.steps summary{font-size:14px}
+details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
+
+/* credit */
+.credit .bar{padding:11px 14px}
+.credit .bar .l small{font-size:9.5px}
+.credit .bar .l b{font-size:14px}
+.credit .bar .r{font-size:11.5px}
+.toast{font-size:14px;padding:12px 18px}
+
 @media print{ .screen:not(.on){display:none!important} .credit{display:none} }
 </style>
 </head>
@@ -399,56 +540,40 @@ html:has(body.welcome){background:#EAF3F2}
 <!-- ===== HOME ===== -->
 <div class="screen" id="s-home">
   <div class="topbar">
-    <div class="tt">ERCP — سجل الحالات<small>التصوير الرجعي للقنوات المرارية والبنكرياسية بالمناظير</small></div>
+    <div class="tt">ERCP<small>وحدة المناظير — مستشفى العربي</small></div>
     <button class="icobtn" id="exitBtn">خروج</button>
   </div>
 
-  <div class="alertbanner" id="alertBanner" hidden>
-    <div class="ab-t" id="abTitle">—</div>
-    <div class="ab-s" id="abSub">راجع «تنبيهات المخزن» تحت</div>
-    <button id="abBtn">عرض التنبيهات</button>
+  <div class="hstat ok" id="hstat" role="button">
+    <div class="ico" id="hstatIco">✓</div>
+    <div class="txt"><div class="t" id="hstatT">—</div><div class="s" id="hstatS">—</div></div>
+    <button class="go" id="hstatGo" aria-label="عرض التنبيهات">‹</button>
   </div>
 
-  <div id="sampleBar" class="samplebar" hidden>
-    الحالات والأصناف اللي في الصفحة أمثلة للتوضيح.
-    <button id="clearSamples">امسح الأمثلة وابدأ بياناتي</button>
+  <button class="bigact" id="addCase">
+    <span class="ico">＋</span>
+    <span class="txt"><span class="t">تسجيل صرف اليوم</span><span class="s">اختار الأصناف والكميات</span></span>
+  </button>
+
+  <div class="tiles">
+    <button class="tile" data-go="store"><span class="ic">▤</span><b>المخزن</b><span id="iCountSmall">—</span></button>
+    <button class="tile" data-go="cases"><span class="ic">≡</span><b>الصرف اليومي</b><span id="cCountSmall">—</span></button>
+    <button class="tile" data-go="rep"><span class="ic">▦</span><b>التقارير</b><span>الاستهلاك</span></button>
   </div>
 
-  <div class="panel" style="padding:10px">
-    <div class="kpis" id="kpis"></div>
-  </div>
+  <div class="kpis4" id="kpis"></div>
 
-  <div class="actions">
-    <button class="act primary" id="addCase"><span class="ic">＋</span><b>تسجيل صرف اليوم</b><span>اختار الأدوات والكميات اللي اتاخدت</span></button>
-    <button class="act" data-go="cases"><span class="ic">≡</span><b>الصرف</b><span id="cCountSmall">—</span></button>
-    <button class="act" data-go="store"><span class="ic">▤</span><b>المخزن</b><span id="iCountSmall">—</span></button>
-    <button class="act" data-go="rep"><span class="ic">▦</span><b>التقارير</b><span>الاستهلاك والقيمة</span></button>
-    <button class="act" id="backup"><span class="ic">↓</span><b>نسخة احتياطية</b><span>تنزيل / استرجاع</span></button>
-    <input type="file" id="restoreFile" accept="application/json,.json" hidden />
-    <button class="act wide" id="restoreBtn"><span class="ic">↑</span><b>استرجاع نسخة</b><span>من ملف على جهازك</span></button>
-  </div>
+  <button class="morebtn" id="moreBtn">المزيد والإعدادات</button>
+  <input type="file" id="restoreFile" accept="application/json,.json" hidden />
+</div>
 
-  <div class="panel">
-    <h2>تنبيهات المخزن</h2>
-    <div id="alertList"></div>
-    <div class="row wrap" style="margin-top:8px">
-      <label class="field grow" style="margin:0">
-        <span>ينبهني قبل الانتهاء بـ (أيام)</span>
-        <input type="number" id="alertDays" min="1" max="365" step="1" />
-      </label>
-      <button class="btn small" id="saveAlert">حفظ</button>
-    </div>
+<!-- ===== ALERTS ===== -->
+<div class="screen" id="s-alerts">
+  <div class="topbar">
+    <button class="icobtn" data-go="home">‹ رجوع</button>
+    <div class="tt">التنبيهات<small id="alertCount">—</small></div>
   </div>
-
-  <details class="steps">
-    <summary>خطوات الاستخدام</summary>
-    <div>
-      1. سجّل الأدوات في «المخزن»: الكمية، الإعداد الثابت، الصلاحية، وسعر الوحدة.<br />
-      2. كل ما تصرف أدوات، اضغط «تسجيل صرف اليوم» واختار الأدوات والكميات.<br />
-      3. الرصيد بيتخصم لوحده، و«+ كمية» بتضيف للمخزن في أي وقت.<br />
-      4. «التقارير» بيوريك استهلاك كل صنف وقيمته والباقي منه.
-    </div>
-  </details>
+  <div class="panel" style="padding:4px 16px"><div id="alertList"></div></div>
 </div>
 
 <!-- ===== CASES ===== -->
@@ -456,7 +581,7 @@ html:has(body.welcome){background:#EAF3F2}
   <div class="topbar">
     <button class="icobtn" data-go="home">‹ رجوع</button>
     <div class="tt">الصرف اليومي<small id="caseCount"></small></div>
-    <button class="icobtn" id="addCase2">+ صرف</button>
+    <button class="icobtn" id="addCase2">＋ صرف</button>
   </div>
   <div id="caseList"></div>
 </div>
@@ -465,22 +590,19 @@ html:has(body.welcome){background:#EAF3F2}
 <div class="screen" id="s-store">
   <div class="topbar">
     <button class="icobtn" data-go="home">‹ رجوع</button>
-    <div class="tt">المخزن<small>الرصيد بعد الخصم — ضيف سعر الوحدة لمعرفة القيمة</small></div>
-    <button class="icobtn" id="addItem">+ أداة</button>
+    <div class="tt">المخزن<small id="storeSub">—</small></div>
   </div>
-  <div class="toolbar"><input type="search" id="q" placeholder="ابحث باسم الأداة…" /></div>
+  <button class="newitem" id="addItem">＋ صنف جديد</button>
+  <div class="toolbar"><input type="search" id="q" placeholder="ابحث باسم الصنف…" /></div>
   <div id="itemList"></div>
-  <div class="panel" style="margin-top:10px">
-    <h2>آخر إضافات المخزن</h2>
-    <div id="receiptList"></div>
-  </div>
+  <details class="steps"><summary>آخر إضافات المخزن</summary><div id="receiptList"></div></details>
 </div>
 
 <!-- ===== REPORTS ===== -->
 <div class="screen" id="s-rep">
   <div class="topbar">
     <button class="icobtn" data-go="home">‹ رجوع</button>
-    <div class="tt">التقارير<small>استهلاك كل أداة وقيمتها</small></div>
+    <div class="tt">التقارير<small>استهلاك كل صنف وقيمته</small></div>
     <button class="icobtn" id="repPrint">طباعة</button>
   </div>
   <div class="panel">
@@ -488,12 +610,12 @@ html:has(body.welcome){background:#EAF3F2}
       <label class="field" style="margin:0"><span>من تاريخ</span><input type="date" id="rFrom" /></label>
       <label class="field" style="margin:0"><span>إلى تاريخ</span><input type="date" id="rTo" /></label>
     </div>
-    <button class="btn ghost small" id="repClear" style="width:100%;margin-top:8px">كل الفترة</button>
+    <button class="btn ghost small" id="repClear" style="width:100%;margin-top:10px">كل الفترة</button>
   </div>
   <div class="panel" style="padding:0;overflow:auto"><table class="rep" id="repTable"></table></div>
   <div class="panel">
-    <div class="row"><span class="grow muted">عدد عمليات الصرف</span><b id="repCases" style="color:var(--dark)">0</b></div>
-    <div class="row" style="margin-top:6px"><span class="grow muted">إجمالي قيمة المستهلك</span><b id="repTotal" style="color:var(--dark)">0</b></div>
+    <div class="row"><span class="grow muted">عدد عمليات الصرف</span><b id="repCases" style="color:var(--dark);font-size:17px">0</b></div>
+    <div class="row" style="margin-top:10px"><span class="grow muted">إجمالي قيمة المستهلك</span><b id="repTotal" style="color:var(--dark);font-size:17px">0</b></div>
   </div>
 </div>
 
@@ -632,45 +754,110 @@ document.querySelectorAll('[data-go]').forEach(b=>{ b.onclick = ()=>showScreen(b
 (function(){ if(document.querySelector('#s-welcome.on')) document.body.classList.add('welcome'); })();
 document.getElementById('enterBtn').onclick = ()=>showScreen('home');
 document.getElementById('exitBtn').onclick = ()=>showScreen('welcome');
-
 /* ---------- home ---------- */
+function alertCounts(){
+  let exp=0, near=0, low=0;
+  S.items.forEach(it=>{
+    const st = expState(it);
+    if(st.key==='exp') exp++;
+    if(st.key==='near') near++;
+    if(parOf(it)>0 && balanceOf(it) < parOf(it)) low++;
+  });
+  return {exp, near, low};
+}
 function renderHome(){
   const items = S.items;
   const usedQty = S.cases.reduce((s,c)=>s+(c.lines||[]).reduce((a,l)=>a+n(l.qty),0),0);
   const value = S.cases.reduce((s,c)=>s+caseCost(c),0);
-  const exp = items.filter(i=>expState(i).key==='exp').length;
-  const near = items.filter(i=>expState(i).key==='near').length;
-  const low = items.filter(i=>parOf(i)>0 && balanceOf(i) < parOf(i)).length;
+  const {exp,near,low} = alertCounts();
   const noPrices = items.length>0 && items.every(i=>n(i.price)===0);
   const kpis = [
-    [S.cases.length,'عملية صرف',''],
-    [usedQty,'أداة مستخدمة',''],
-    [noPrices ? '—' : fmt(Math.round(value)), noPrices ? 'قيمة المستهلك (ضيف الأسعار)' : 'قيمة المستهلك (ج.م)',''],
-    [exp,'منتهي الصلاحية', exp?'alert':''],
-    [near,'قريب الانتهاء', near?'warn':''],
-    [low,'أقل من الإعداد الثابت', low?'alert':'']
+    [S.cases.length, 'عملية صرف', ''],
+    [usedQty, 'أداة مستخدمة', ''],
+    [noPrices ? '—' : fmt(Math.round(value)), noPrices ? 'قيمة المستهلك' : 'قيمة المستهلك (ج.م)', ''],
+    [low, 'صنف تحت الإعداد', low?'alert':'']
   ];
   $('#kpis').innerHTML = kpis.map(([v,l,c])=>
-    `<div class="kpi ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
-  $('#alertDays').value = n(S.settings.alertDays);
-  $('#sampleBar').hidden = !S.samples;
+    `<div class="k ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+
+  const st = $('#hstat');
+  let cls='ok', ic='✓', t='المخزن سليم', sub='مفيش تنبيهات — كل الأصناف فوق الإعداد الثابت.';
+  if(exp>0){
+    cls='danger'; ic='!';
+    t = exp===1 ? 'صنف واحد منتهي الصلاحية' : fmt(exp)+' أصناف منتهية الصلاحية';
+    sub = (near ? fmt(near)+' قريب الانتهاء · ' : '') + (low ? fmt(low)+' تحت الإعداد' : 'راجعها قبل الاستخدام');
+  } else if(near>0 || low>0){
+    cls='warn'; ic='!';
+    t = 'أصناف محتاجة مراجعة';
+    sub = (near ? fmt(near)+' قريب الانتهاء' : '') + ((near&&low)?' · ':'') + (low ? fmt(low)+' تحت الإعداد' : '');
+  }
+  st.className = 'hstat '+cls;
+  $('#hstatIco').textContent = ic;
+  $('#hstatT').textContent = t;
+  $('#hstatS').textContent = sub;
+  st.onclick = ()=>showScreen('alerts');
+
+  const cs = $('#cCountSmall'); if(cs) cs.textContent = S.cases.length ? fmt(S.cases.length)+' صرف' : 'مفيش صرف';
+  const is = $('#iCountSmall'); if(is) is.textContent = S.items.length ? fmt(S.items.length)+' صنف' : 'مفيش أصناف';
 }
-$('#saveAlert').onclick = ()=>{
-  const v = Math.max(1, Math.min(365, n($('#alertDays').value)||180));
-  S.settings.alertDays = v; save(); renderAll(); toast('تم حفظ مدة التنبيه: '+v+' يوم');
-};
-$('#clearSamples').onclick = ()=>{
-  if(!confirm('هتمسح كل الحالات والأدوات. متأكد؟')) return;
-  S = {v:1, items:[], cases:[], settings:S.settings, samples:false};
-  save(); renderAll(); toast('تم المسح — ابدأ بإضافة أدواتك');
-};
+
+/* ---------- alerts screen ---------- */
+function renderAlerts(){
+  const box = $('#alertList'); if(!box) return;
+  const rows = [];
+  S.items.forEach(it=>{
+    const st = expState(it), bal = balanceOf(it), low = parOf(it)>0 && bal < parOf(it);
+    if(st.key==='exp' || st.key==='near' || low){
+      rows.push(`<div class="alertrow"><span class="nm">${it.ar}</span>
+        ${st.key==='exp'?`<span class="chip exp">منتهي ${dmy(it.exp)}</span>`:''}
+        ${st.key==='near'?`<span class="chip near">${st.label}</span>`:''}
+        ${low?`<span class="chip low">باقي ${fmt(bal)} / الثابت ${fmt(parOf(it))}</span>`:''}</div>`);
+    }
+  });
+  box.innerHTML = rows.length ? rows.join('') :
+    '<div class="muted" style="padding:14px 0;text-align:center">مفيش تنبيهات دلوقتي — كل الأصناف سليمة وفوق الإعداد الثابت.</div>';
+  const {exp,near,low} = alertCounts();
+  const parts = [];
+  if(exp) parts.push(fmt(exp)+' منتهي');
+  if(near) parts.push(fmt(near)+' قريب الانتهاء');
+  if(low) parts.push(fmt(low)+' تحت الإعداد');
+  const c = $('#alertCount');
+  if(c) c.textContent = parts.length ? parts.join(' · ') : 'كله سليم';
+}
+
+/* ---------- more / settings sheet ---------- */
+function moreSheet(){
+  openModal(`
+    <h3>المزيد والإعدادات</h3>
+    <button class="menuopt" id="mBackup"><span class="ic">↓</span>نسخة احتياطية على جهازك</button>
+    <button class="menuopt" id="mRestore"><span class="ic">↑</span>استرجاع نسخة من ملف</button>
+    <label class="field" style="margin-top:6px"><span>ينبهني قبل الانتهاء بـ (أيام)</span>
+      <input type="number" id="alertDays" min="1" max="365" step="1" inputmode="numeric" value="${n(S.settings.alertDays)}" /></label>
+    <button class="btn" id="saveAlert" style="width:100%">حفظ مدة التنبيه</button>
+    ${S.samples?`<button class="menuopt danger" id="clearSamples" style="margin-top:14px"><span class="ic">×</span>مسح الأمثلة والبدء ببياناتي</button>`:''}
+    <div class="foot"><button class="btn ghost" onclick="closeModal()">إغلاق</button></div>`);
+  $('#mBackup').onclick = ()=>{ closeModal(); doBackup(); };
+  $('#mRestore').onclick = ()=>{ closeModal(); $('#restoreFile').click(); };
+  $('#saveAlert').onclick = ()=>{
+    const v = Math.max(1, Math.min(365, n($('#alertDays').value)||180));
+    S.settings.alertDays = v; save(); closeModal(); renderAll();
+    toast('مدة التنبيه: '+v+' يوم');
+  };
+  const cs = $('#clearSamples');
+  if(cs) cs.onclick = ()=>{
+    if(!confirm('هتمسح كل الأصناف والحركات. متأكد؟')) return;
+    S = {v:1, items:[], cases:[], receipts:[], settings:S.settings, samples:false};
+    save(); closeModal(); renderAll(); toast('تم المسح — ابدأ بإضافة أصنافك');
+  };
+}
+$('#moreBtn').onclick = moreSheet;
 
 /* ---------- daily usage ---------- */
 function renderCases(){
   const box = $('#caseList');
   const rows = S.cases.slice().sort((a,b)=> (b.date||'').localeCompare(a.date||'') || (n(b.no)-n(a.no)));
-  $('#caseCount').textContent = rows.length ? rows.length+' صرف' : '';
-  if(!rows.length){ box.innerHTML = '<div class="panel muted" style="text-align:center">مفيش صرف مسجل. اضغط «+ صرف».</div>'; return; }
+  $('#caseCount').textContent = rows.length ? fmt(rows.length)+' صرف' : '';
+  if(!rows.length){ box.innerHTML = '<div class="panel muted" style="text-align:center">مفيش صرف مسجل. اضغط «＋ صرف» فوق.</div>'; return; }
   box.innerHTML = rows.map(c=>{
     const lines = (c.lines||[]).map(l=>`${itemName(l.itemId)} <b>× ${fmt(l.qty)}</b>`).join(' · ');
     const qty = (c.lines||[]).reduce((s,l)=>s+n(l.qty),0);
@@ -683,7 +870,7 @@ function renderCases(){
         ${cost>0?`<span class="ty">${money(cost)}</span>`:''}
       </div>
       <div class="lns">${lines||'—'}</div>
-      ${c.note?`<div class="muted" style="font-size:11.5px;margin-top:3px">${c.note}</div>`:''}
+      ${c.note?`<div class="muted" style="margin-top:4px">${c.note}</div>`:''}
       <div class="acts">
         <button data-cedit="${c.id}">تعديل</button>
         <button data-cdel="${c.id}">حذف</button>
@@ -693,7 +880,7 @@ function renderCases(){
   box.querySelectorAll('[data-cedit]').forEach(b=>b.onclick=()=>caseModal(b.dataset.cedit));
   box.querySelectorAll('[data-cdel]').forEach(b=>b.onclick=()=>{
     const c = S.cases.find(x=>x.id===b.dataset.cdel);
-    if(!confirm(`حذف صرف ${dmy(c.date)}؟ الأدوات هترجع للمخزن.`)) return;
+    if(!confirm(`حذف صرف ${dmy(c.date)}؟ الأصناف هترجع للمخزن.`)) return;
     S.cases = S.cases.filter(x=>x.id!==c.id);
     save(); renderAll(); toast('تم حذف الصرف');
   });
@@ -705,7 +892,7 @@ function itemOptions(sel){
 }
 function lineRowHtml(sel, qty){
   return `<div class="line-row">
-    <select class="litem"><option value="">— اختار الأداة —</option>${itemOptions(sel)}</select>
+    <select class="litem"><option value="">— اختار الصنف —</option>${itemOptions(sel)}</select>
     <input class="lqty" type="number" min="1" step="1" inputmode="numeric" placeholder="الكمية" value="${qty?n(qty):''}" />
     <button class="lrm" title="حذف">×</button>
   </div>`;
@@ -717,23 +904,18 @@ function caseModal(id){
   openModal(`
     <h3>${id?('تعديل صرف '+dmy(c.date)):'تسجيل صرف جديد'}</h3>
     <label class="field"><span>التاريخ</span><input type="date" id="c_date" value="${c.date||''}" /></label>
-    <div class="field"><span>الأدوات اللي اتاخدت</span></div>
+    <div class="field" style="margin-bottom:6px"><span>الأصناف اللي اتاخدت</span></div>
     <div id="lines">${(c.lines||[]).map(l=>lineRowHtml(l.itemId, l.qty)).join('')}</div>
-    <button class="addline" id="addLine">+ إضافة أداة</button>
-    <label class="field" style="margin-top:10px"><span>ملاحظات (اختياري)</span><input id="c_note" value="${(c.note||'').replace(/"/g,'&quot;')}" placeholder="مثال: حالة طارئة" /></label>
+    <button class="addline" id="addLine">＋ إضافة صنف</button>
+    <label class="field" style="margin-top:14px"><span>ملاحظات (اختياري)</span><input id="c_note" value="${(c.note||'').replace(/"/g,'&quot;')}" placeholder="مثال: حالة طارئة" /></label>
     <div class="foot">
       <button class="btn ghost" onclick="closeModal()">إلغاء</button>
       <button class="btn" id="c_save">حفظ وخصم من الرصيد</button>
     </div>`);
   const linesBox = $('#lines');
-  const bind = ()=>{
-    linesBox.querySelectorAll('.lrm').forEach(b=>b.onclick=()=>{ b.closest('.line-row').remove(); });
-  };
+  const bind = ()=>{ linesBox.querySelectorAll('.lrm').forEach(b=>b.onclick=()=>{ b.closest('.line-row').remove(); }); };
   bind();
-  $('#addLine').onclick = ()=>{
-    linesBox.insertAdjacentHTML('beforeend', lineRowHtml('', ''));
-    bind();
-  };
+  $('#addLine').onclick = ()=>{ linesBox.insertAdjacentHTML('beforeend', lineRowHtml('', '')); bind(); };
   $('#c_save').onclick = ()=>{
     const date = $('#c_date').value;
     if(!date){ toast('اكتب التاريخ'); return; }
@@ -747,7 +929,7 @@ function caseModal(id){
       lines.push({itemId, qty});
     });
     if(problem){ toast(problem); return; }
-    if(!lines.length){ toast('اختار أداة واحدة على الأقل'); return; }
+    if(!lines.length){ toast('اختار صنف واحد على الأقل'); return; }
     for(const l of lines){
       const it = S.items.find(x=>x.id===l.itemId);
       if(!it) continue;
@@ -767,82 +949,103 @@ function caseModal(id){
 }
 $('#addCase').onclick = ()=>caseModal(null);
 $('#addCase2').onclick = ()=>caseModal(null);
-
-/* ---------- store (items) ---------- */
+/* ---------- store ---------- */
 function renderStore(){
   const q = ($('#q').value||'').trim().toLowerCase();
   const list = S.items.filter(it=>!q || (it.ar+' '+it.en).toLowerCase().includes(q));
   const box = $('#itemList');
+  const {low} = alertCounts();
+  const sub = $('#storeSub');
+  if(sub) sub.textContent = fmt(S.items.length)+' صنف' + (low?' · '+fmt(low)+' تحت الإعداد':'');
   if(!list.length){
-    box.innerHTML = '<div class="panel muted" style="text-align:center">مفيش أدوات مطابقة. اضغط «إضافة أداة جديدة».</div>';
+    box.innerHTML = `<div class="panel muted" style="text-align:center">${S.items.length? 'مفيش أصناف مطابقة للبحث.' : 'مفيش أصناف لسه — اضغط «＋ صنف جديد» فوق.'}</div>`;
     return;
   }
   box.innerHTML = list.map(it=>{
     const bal = balanceOf(it), st = expState(it), par = parOf(it);
-    const low = par>0 && bal < par;
-    const cls = st.key==='exp' ? 'exp' : st.key==='near' ? 'near' : low ? 'low' : '';
+    const lowOne = par>0 && bal < par;
+    const cls = st.key==='exp' ? 'exp' : st.key==='near' ? 'near' : lowOne ? 'low' : '';
+    const pct = par>0 ? Math.max(0, Math.min(100, Math.round(bal/par*100))) : 100;
     const chips = [];
-    if(st.key!=='none') chips.push(`<span class="chip ${st.key==='exp'?'exp':st.key==='near'?'near':'ok'}">${st.label}</span>`);
-    if(it.exp) chips.push(`<span class="chip">${dmy(it.exp)}</span>`);
-    if(low) chips.push(`<span class="chip low">أقل من الثابت</span>`);
+    if(st.key==='exp') chips.push(`<span class="chip exp">منتهي ${dmy(it.exp)}</span>`);
+    else if(st.key==='near') chips.push(`<span class="chip near">${st.label}</span>`);
+    else if(it.exp) chips.push(`<span class="chip ok">صلاحية ${dmy(it.exp)}</span>`);
+    if(lowOne) chips.push(`<span class="chip low">تحت الإعداد</span>`);
     if(n(it.price)>0) chips.push(`<span class="chip">${money(it.price)}</span>`);
-    if(receivedOf(it.id)>0) chips.push(`<span class="chip">أُضيف ${fmt(receivedOf(it.id))}</span>`);
-    return `<div class="item ${cls}">
-      <div class="top">
-        <div class="nm"><div class="ar">${it.ar||'—'}</div><div class="en">${it.en||''}</div></div>
-        <div class="bal"><b>${fmt(bal)}</b><span>من ${fmt(par)}</span></div>
+    return `<div class="srow ${cls}">
+      <div class="l1">
+        <div class="nm"><b>${it.ar||'—'}</b>${it.en?`<i>${it.en}</i>`:''}</div>
+        <div class="qty"><b>${fmt(bal)}</b><span>من ${fmt(par)}</span></div>
       </div>
-      <div class="meta">${chips.join('')}</div>
-      <div class="acts">
-        <button data-add="${it.id}">+ كمية</button>
-        <button data-edit="${it.id}">تعديل</button>
-        <button class="del" data-del="${it.id}">حذف</button>
+      <div class="bar ${cls}"><i style="width:${pct}%"></i></div>
+      <div class="chips">${chips.join('')}</div>
+      <div class="row2">
+        <button class="add" data-add="${it.id}">＋ كمية</button>
+        <button class="menu" data-menu="${it.id}" aria-label="خيارات الصنف">⋮</button>
       </div>
     </div>`;
   }).join('');
-  box.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>itemModal(b.dataset.edit));
   box.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>receiptModal(b.dataset.add));
-  box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
-    const it = S.items.find(x=>x.id===b.dataset.del);
-    const used = S.cases.filter(c=>(c.lines||[]).some(l=>l.itemId===it.id)).length;
-    if(!confirm(`حذف «${it.ar}»؟` + (used?`\nفيه ${used} حالة فيها الأداة دي، هتتشال منها.`:''))) return;
-    S.items = S.items.filter(x=>x.id!==it.id);
-    S.cases.forEach(c=>{ c.lines = (c.lines||[]).filter(l=>l.itemId!==it.id); });
-    save(); renderAll(); toast('تم الحذف');
-  });
+  box.querySelectorAll('[data-menu]').forEach(b=>b.onclick=()=>itemMenu(b.dataset.menu));
 }
 $('#q').oninput = renderStore;
 
-function itemModal(id){
-  const it = id ? S.items.find(x=>x.id===id) : {id:'', ar:'', en:'', unit:UNITS[0], opening:0, par:0, min:0, exp:'', price:0, note:''};
+/* ---------- item options sheet ---------- */
+function itemMenu(id){
+  const it = S.items.find(x=>x.id===id);
+  if(!it) return;
   openModal(`
-    <h3>${id?'تعديل أداة':'أداة جديدة'}</h3>
-    <label class="field"><span>اسم الأداة (عربي)</span><input id="f_ar" value="${(it.ar||'').replace(/"/g,'&quot;')}" /></label>
-    <label class="field"><span>الاسم بالإنجليزي</span><input id="f_en" value="${(it.en||'').replace(/"/g,'&quot;')}" /></label>
+    <h3>${it.ar}</h3>
+    <div class="muted" style="margin-bottom:14px">الباقي ${fmt(balanceOf(it))} من ${fmt(parOf(it))}${it.exp?' · صلاحية '+dmy(it.exp):''}</div>
+    <button class="menuopt" id="imEdit"><span class="ic">✎</span>تعديل الاسم والإعداد والصلاحية</button>
+    <button class="menuopt" id="imAdd"><span class="ic">＋</span>إضافة كمية للمخزن</button>
+    <button class="menuopt danger" id="imDel"><span class="ic">×</span>حذف الصنف</button>
+    <div class="foot"><button class="btn ghost" onclick="closeModal()">إغلاق</button></div>`);
+  $('#imEdit').onclick = ()=>{ closeModal(); itemModal(it.id); };
+  $('#imAdd').onclick = ()=>{ closeModal(); receiptModal(it.id); };
+  $('#imDel').onclick = ()=>{
+    const used = S.cases.filter(c=>(c.lines||[]).some(l=>l.itemId===it.id)).length;
+    if(!confirm(`حذف «${it.ar}»؟` + (used?`\nفيه ${used} حركة صرف فيها الصنف ده، هتتشال منها.`:''))) return;
+    S.items = S.items.filter(x=>x.id!==it.id);
+    S.cases.forEach(c=>{ c.lines = (c.lines||[]).filter(l=>l.itemId!==it.id); });
+    save(); closeModal(); renderAll(); toast('تم حذف الصنف');
+  };
+}
+
+/* ---------- add / edit item ---------- */
+function itemModal(id){
+  const it = id ? S.items.find(x=>x.id===id)
+    : {id:'', ar:'', en:'', unit:UNITS[0], opening:0, par:0, min:0, exp:'', price:0, note:''};
+  openModal(`
+    <h3>${id?'تعديل الصنف':'صنف جديد'}</h3>
+    <label class="field"><span>اسم الصنف (عربي)</span><input id="f_ar" value="${(it.ar||'').replace(/"/g,'&quot;')}" placeholder="مثال: وصلة أرجون" /></label>
+    <label class="field"><span>الاسم بالإنجليزي (اختياري)</span><input id="f_en" value="${(it.en||'').replace(/"/g,'&quot;')}" /></label>
     <div class="grid2">
-      <label class="field"><span>الوحدة</span><select id="f_unit">${UNITS.map(u=>`<option ${u===it.unit?'selected':''}>${u}</option>`).join('')}</select></label>
-      <label class="field"><span>سعر الوحدة (ج.م)</span><input type="number" id="f_price" min="0" step="50" inputmode="numeric" value="${n(it.price)}" /></label>
-    </div>
-    <div class="grid2">
-      <label class="field"><span>الكمية الابتدائية</span><input type="number" id="f_opening" min="0" step="1" inputmode="numeric" value="${n(it.opening)}" /></label>
       <label class="field"><span>الإعداد الثابت</span><input type="number" id="f_par" min="0" step="1" inputmode="numeric" value="${parOf(it)}" /></label>
+      <label class="field"><span>${id?'تاريخ الصلاحية':'تاريخ الصلاحية (اختياري)'}</span><input type="date" id="f_exp" value="${it.exp||''}" /></label>
     </div>
-    <label class="field"><span>تاريخ الصلاحية</span><input type="date" id="f_exp" value="${it.exp||''}" /></label>
-    <label class="field"><span>ملاحظات</span><input id="f_note" value="${(it.note||'').replace(/"/g,'&quot;')}" /></label>
-    <div class="muted" style="font-size:12px;margin-bottom:6px">«الإعداد الثابت» هو الرقم اللي لازم يفضل في المخزن — لو الباقي قل عنه بيظهر تنبيه. الكمية الابتدائية + أي إضافات − المستخدم = الباقي.</div>
+    <div class="grid2">
+      <label class="field"><span>${id?'الكمية الابتدائية':'الكمية الابتدائية'}</span><input type="number" id="f_opening" min="0" step="1" inputmode="numeric" value="${n(it.opening)}" /></label>
+      <label class="field"><span>الوحدة</span><select id="f_unit">${UNITS.map(u=>`<option ${u===it.unit?'selected':''}>${u}</option>`).join('')}</select></label>
+    </div>
+    <div class="grid2">
+      <label class="field"><span>سعر الوحدة (ج.م)</span><input type="number" id="f_price" min="0" step="50" inputmode="numeric" value="${n(it.price)}" /></label>
+      <label class="field"><span>ملاحظات</span><input id="f_note" value="${(it.note||'').replace(/"/g,'&quot;')}" /></label>
+    </div>
+    <div class="muted" style="margin-bottom:10px">الإعداد الثابت = الرقم اللي لازم يفضل في المخزن. الباقي = الكمية الابتدائية + الإضافات − المصروف.</div>
     <div class="foot">
       <button class="btn ghost" onclick="closeModal()">إلغاء</button>
       <button class="btn" id="f_save">حفظ</button>
     </div>`);
   $('#f_save').onclick = ()=>{
     const ar = $('#f_ar').value.trim();
-    if(!ar){ toast('اكتب اسم الأداة'); return; }
+    if(!ar){ toast('اكتب اسم الصنف'); return; }
     const rec = {id: it.id || uid(), ar, en:$('#f_en').value.trim(), unit:$('#f_unit').value,
       opening:n($('#f_opening').value), par:n($('#f_par').value), min:0, exp:$('#f_exp').value,
       price:n($('#f_price').value), note:$('#f_note').value.trim()};
     if(it.id){ const i = S.items.findIndex(x=>x.id===it.id); S.items[i] = rec; }
     else S.items.push(rec);
-    save(); closeModal(); renderAll(); toast('تم الحفظ');
+    save(); closeModal(); renderAll(); toast(id?'تم تعديل الصنف':'تمت إضافة الصنف');
   };
 }
 $('#addItem').onclick = ()=>itemModal(null);
@@ -853,14 +1056,13 @@ function receiptModal(itemId){
   if(!it) return;
   openModal(`
     <h3>إضافة كمية — ${it.ar}</h3>
-    <div class="muted" style="font-size:12.5px;margin-bottom:8px">الباقي حاليًا: <b style="color:var(--dark)">${fmt(balanceOf(it))}</b> ${it.unit||''} · الإعداد الثابت: ${fmt(parOf(it))}</div>
+    <div class="muted" style="margin-bottom:12px">الباقي حاليًا: <b style="color:var(--petrol-d)">${fmt(balanceOf(it))}</b> ${it.unit||''} · الإعداد الثابت: ${fmt(parOf(it))}</div>
     <div class="grid2">
       <label class="field"><span>تاريخ الإضافة</span><input type="date" id="r_date" value="${todayISO()}" /></label>
       <label class="field"><span>الكمية المضافة</span><input type="number" id="r_qty" min="1" step="1" inputmode="numeric" placeholder="0" /></label>
     </div>
     <label class="field"><span>صلاحية الدفعة الجديدة (اختياري)</span><input type="date" id="r_exp" value="${it.exp||''}" /></label>
     <label class="field"><span>ملاحظات (اختياري)</span><input id="r_note" placeholder="مصدر / رقم إيصال" /></label>
-    <div class="muted" style="font-size:12px;margin-bottom:6px">لو كتبت صلاحية، بتتحدث صلاحية الصنف للدفعة الجديدة.</div>
     <div class="foot">
       <button class="btn ghost" onclick="closeModal()">إلغاء</button>
       <button class="btn" id="r_save">إضافة للمخزن</button>
@@ -879,15 +1081,14 @@ function receiptModal(itemId){
 function renderReceipts(){
   const box = $('#receiptList'); if(!box) return;
   const rows = (S.receipts||[]).slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  if(!rows.length){ box.innerHTML = '<div class="muted">مفيش إضافات مسجلة — استخدم «+ كمية» في كارت الأداة.</div>'; return; }
-  box.innerHTML = rows.slice(0,12).map(r=>{
+  if(!rows.length){ box.innerHTML = '<div class="muted">مفيش إضافات مسجلة — استخدم «＋ كمية» في أي صنف.</div>'; return; }
+  box.innerHTML = rows.slice(0,10).map(r=>{
     const it = S.items.find(x=>x.id===r.itemId);
     return `<div class="alertrow">
-      <span class="nm">${it?it.ar:'أداة محذوفة'}</span>
+      <span class="nm">${it?it.ar:'صنف محذوف'}</span>
       <span class="chip">${dmy(r.date)}</span>
       <span class="chip ok">+${fmt(r.qty)}</span>
-      ${r.exp?`<span class="chip">صلاحية ${dmy(r.exp)}</span>`:''}
-      <button class="x" data-rrm="${r.id}" style="background:none;border:0;color:#B7413A;font-size:16px">×</button>
+      <button data-rrm="${r.id}" style="background:none;border:0;color:#B7413A;font-size:18px">×</button>
     </div>`;
   }).join('');
   box.querySelectorAll('[data-rrm]').forEach(b=>b.onclick=()=>{
@@ -909,13 +1110,13 @@ function renderRep(){
     return {it, used, val, bal: balanceOf(it)};
   }).filter(r=>r.used>0 || S.items.length<=20);
   const table = $('#repTable');
-  table.innerHTML = `<tr><th>الأداة</th><th>المستخدم</th><th>الباقي</th><th>القيمة</th></tr>` +
+  table.innerHTML = `<tr><th>الصنف</th><th>المستخدم</th><th>الباقي</th><th>القيمة</th></tr>` +
     (rows.length ? rows.map(r=>`<tr>
       <td class="n">${r.it.ar}</td>
       <td>${fmt(r.used)}</td>
       <td>${fmt(r.bal)}</td>
       <td>${fmt(Math.round(r.val))}</td>
-    </tr>`).join('') : `<tr><td colspan="4" style="padding:14px" class="muted">مفيش بيانات في الفترة دي</td></tr>`);
+    </tr>`).join('') : `<tr><td colspan="4" style="padding:16px" class="muted">مفيش بيانات في الفترة دي</td></tr>`);
   $('#repCases').textContent = cases.length;
   $('#repTotal').textContent = money(total);
 }
@@ -925,15 +1126,14 @@ $('#repClear').onclick = ()=>{ $('#rFrom').value=''; $('#rTo').value=''; renderR
 $('#repPrint').onclick = ()=>{ window.print(); };
 
 /* ---------- backup ---------- */
-$('#backup').onclick = ()=>{
+function doBackup(){
   const blob = new Blob([JSON.stringify(S,null,1)], {type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'ercp-log-backup-'+todayISO()+'.json';
   a.click(); URL.revokeObjectURL(a.href);
   toast('تم تنزيل النسخة');
-};
-$('#restoreBtn').onclick = ()=>$('#restoreFile').click();
+}
 $('#restoreFile').onchange = e=>{
   const f = e.target.files[0]; if(!f) return;
   const rd = new FileReader();
@@ -942,7 +1142,7 @@ $('#restoreFile').onchange = e=>{
       const o = JSON.parse(rd.result);
       if(!o || !Array.isArray(o.items)) throw 0;
       if(!confirm('استرجاع النسخة دي؟ البيانات الحالية هتتستبدل.')) return;
-      S = o; S.cases = S.cases||[]; S.settings = S.settings||{alertDays:180};
+      S = o; S.cases = S.cases||[]; S.receipts = S.receipts||[]; S.settings = S.settings||{alertDays:180};
       save(); renderAll(); toast('تم الاسترجاع');
     }catch(err){ toast('الملف مش نسخة صالحة'); }
   };
@@ -950,53 +1150,18 @@ $('#restoreFile').onchange = e=>{
 };
 
 /* ---------- boot ---------- */
-function renderAlerts(){
-  const box = $('#alertList'); if(!box) return;
-  const rows = [];
-  let nExp = 0, nNear = 0, nLow = 0;
-  S.items.forEach(it=>{
-    const st = expState(it), bal = balanceOf(it), low = parOf(it)>0 && bal < parOf(it);
-    if(st.key==='exp') nExp++;
-    if(st.key==='near') nNear++;
-    if(low) nLow++;
-  });
-  S.items.forEach(it=>{
-    const st = expState(it), bal = balanceOf(it), low = parOf(it)>0 && bal < parOf(it);
-    if(st.key==='exp' || st.key==='near' || low){
-      rows.push(`<div class="alertrow"><span class="nm">${it.ar}</span>
-        ${st.key==='exp'?`<span class="chip exp">منتهي ${dmy(it.exp)}</span>`:''}
-        ${st.key==='near'?`<span class="chip near">${st.label}</span>`:''}
-        ${low?`<span class="chip low">باقي ${fmt(bal)} / الثابت ${fmt(parOf(it))}</span>`:''}</div>`);
-    }
-  });
-  box.innerHTML = rows.length ? rows.join('') : '<div class="muted">مفيش تنبيهات دلوقتي — كل الأدوات سليمة وفوق الحد الأدنى.</div>';
-  const bn = $('#alertBanner');
-  if(bn){
-    const parts = [];
-    if(nExp) parts.push(nExp + ' منتهي الصلاحية');
-    if(nNear) parts.push(nNear + ' قريب الانتهاء');
-    if(nLow) parts.push(nLow + ' أقل من الإعداد الثابت');
-    bn.hidden = !parts.length;
-    bn.classList.toggle('danger', nExp > 0);
-    $('#abTitle').textContent = parts.length ? 'تنبيه: ' + parts.join(' · ') : '';
-    $('#abSub').textContent = nExp ? 'فيه أدوات منتهية — راجعها قبل الاستخدام' : 'راجع الصلاحية والكميات تحت';
-    $('#abBtn').onclick = ()=>{ const el = $('#alertList'); if(el) el.scrollIntoView({behavior:'smooth', block:'center'}); };
-  }
-}
 function renderAll(){
-  renderHome(); renderCases(); renderStore(); renderRep(); renderAlerts(); renderReceipts();
-  const cs = $('#cCountSmall'); if(cs) cs.textContent = S.cases.length + ' حالة';
-  const is = $('#iCountSmall'); if(is) is.textContent = S.items.length + ' أداة';
+  renderHome(); renderAlerts(); renderCases(); renderStore(); renderRep(); renderReceipts();
 }
 renderAll();
 (function(){
   const h = (location.hash||'').replace('#','');
-  if(['home','cases','store','rep'].includes(h)) showScreen(h);
+  if(['home','cases','store','rep','alerts'].includes(h)) showScreen(h);
 })();
 
 /* ---------- auto-update: pull a newer build without reinstalling ---------- */
 (function(){
-  const BUILD = '2026-11-27-6';
+  const BUILD = '2026-11-27-7';
   window.APP_BUILD = BUILD;
   function check(){
     const url = location.pathname + '?_=' + Date.now();
@@ -1020,4 +1185,4 @@ renderAll();
 
 </script>
 </body>
-</html>
+  </html>
