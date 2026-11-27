@@ -425,10 +425,11 @@ body{font-size:17px;line-height:1.6}
 .tile span{font-size:12px;color:var(--grey);line-height:1.3}
 
 /* home: four KPIs on petrol */
-.kpis4{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.kpis4 .k{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:14px;padding:14px}
-.kpis4 .k b{display:block;font-size:26px;font-weight:800;color:#fff;line-height:1.15}
-.kpis4 .k span{display:block;font-size:13px;color:#CDE5E2;margin-top:3px}
+.kpis4{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.kpis4 .k{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-radius:14px;
+  padding:14px 8px;text-align:center}
+.kpis4 .k b{display:block;font-size:25px;font-weight:800;color:#fff;line-height:1.15}
+.kpis4 .k span{display:flex;align-items:center;justify-content:center;gap:5px;font-size:12.5px;color:#CDE5E2;margin-top:4px;line-height:1.3}
 .kpis4 .k.alert{background:#7C2C23;border-color:#B96A5F}
 .kpis4 .k.alert b{color:#FFE4DF}
 .kpis4 .k.warn{background:#6D4B13;border-color:#C2A05F}
@@ -520,8 +521,7 @@ details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
 /* tappable KPI cards */
 .kpis4 .k{cursor:pointer;position:relative}
 .kpis4 .k:active{transform:scale(.985)}
-.kpis4 .k span{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.kpis4 .k .ch{font-style:normal;font-size:19px;opacity:.8;line-height:1}
+.kpis4 .k .ch{font-style:normal;font-size:16px;opacity:.8;line-height:1}
 /* detail rows */
 .krow{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid #E3EFED}
 .krow:first-child{border-top:0}
@@ -629,7 +629,7 @@ details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
 <div class="screen" id="s-rep">
   <div class="topbar">
     <button class="icobtn" data-go="home">‹ رجوع</button>
-    <div class="tt">التقارير<small>استهلاك كل صنف وقيمته</small></div>
+    <div class="tt">التقارير<small>استهلاك كل صنف والباقي منه</small></div>
     <button class="icobtn" id="repPrint">طباعة</button>
   </div>
   <div class="panel">
@@ -642,7 +642,7 @@ details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
   <div class="panel" style="padding:0;overflow:auto"><table class="rep" id="repTable"></table></div>
   <div class="panel">
     <div class="row"><span class="grow muted">عدد عمليات الصرف</span><b id="repCases" style="color:var(--dark);font-size:17px">0</b></div>
-    <div class="row" style="margin-top:10px"><span class="grow muted">إجمالي قيمة المستهلك</span><b id="repTotal" style="color:var(--dark);font-size:17px">0</b></div>
+    <div class="row" style="margin-top:10px"><span class="grow muted">إجمالي الأدوات المستهلكة</span><b id="repTotal" style="color:var(--dark);font-size:17px">0</b></div>
   </div>
 </div>
 
@@ -795,14 +795,11 @@ function alertCounts(){
 function renderHome(){
   const items = S.items;
   const usedQty = S.cases.reduce((s,c)=>s+(c.lines||[]).reduce((a,l)=>a+n(l.qty),0),0);
-  const value = S.cases.reduce((s,c)=>s+caseCost(c),0);
   const {exp,near,low} = alertCounts();
-  const noPrices = items.length>0 && items.every(i=>n(i.price)===0);
   const kpis = [
     [S.cases.length, 'عملية صرف', '', 'cases'],
     [usedQty, 'أداة مستخدمة', '', 'used'],
-    [low, 'صنف تحت الإعداد', low?'alert':'', 'low'],
-    [noPrices ? '—' : fmt(Math.round(value)), 'قيمة المستهلك', '', 'value']
+    [low, 'صنف تحت الإعداد', low?'alert':'', 'low']
   ];
   $('#kpis').innerHTML = kpis.map(([v,l,c,k])=>
     `<div class="k ${c}" data-kpi="${k}" role="button"><b>${v}</b><span>${l}<i class="ch">›</i></span></div>`).join('');
@@ -890,26 +887,6 @@ function showKpi(kind){
     }).join('') : '<div class="muted" style="text-align:center;padding:18px 0">كل الأصناف فوق الإعداد الثابت.</div>';
     return;
   }
-  if(kind==='value'){
-    kpiHead('قيمة المستهلك', 'المصروف × سعر الوحدة');
-    const rows = S.items.map(it=>{
-      const used = usedOf(it.id);
-      return {it, used, val: used * n(it.price)};
-    }).filter(r=>r.used>0).sort((a,b)=>b.val-a.val);
-    const priced = rows.filter(r=>n(r.it.price)>0);
-    const total = rows.reduce((s,r)=>s+r.val,0);
-    if(!priced.length){
-      body.innerHTML = `<div class="muted" style="text-align:center;padding:10px 0 16px">مفيش سعر مسجل للأصناف، فمش ممكن نحسب القيمة.</div>
-        <button class="btn" id="kpiGoStore" style="width:100%">افتح المخزن — السعر من ⋮ جنب الصنف</button>`;
-      $('#kpiGoStore').onclick = ()=>showScreen('store');
-      return;
-    }
-    body.innerHTML = rows.map(r=>
-      `<div class="krow"><div class="nm"><b>${r.it.ar}</b><i>${fmt(r.used)} × ${money(r.it.price)}</i></div>
-        <div class="v"><b>${fmt(Math.round(r.val))}</b><span>ج.م</span></div></div>`).join('') +
-      `<div class="ktot"><span>الإجمالي</span><b>${money(total)}</b></div>`;
-    return;
-  }
 }
 
 /* ---------- more / settings sheet ---------- */
@@ -948,13 +925,11 @@ function renderCases(){
   box.innerHTML = rows.map(c=>{
     const lines = (c.lines||[]).map(l=>`${itemName(l.itemId)} <b>× ${fmt(l.qty)}</b>`).join(' · ');
     const qty = (c.lines||[]).reduce((s,l)=>s+n(l.qty),0);
-    const cost = caseCost(c);
     return `<div class="case">
       <div class="hd2">
         <span class="no">${dmy(c.date)}</span>
         <span class="dt">${fmt(qty)} أداة</span>
         <span class="grow"></span>
-        ${cost>0?`<span class="ty">${money(cost)}</span>`:''}
       </div>
       <div class="lns">${lines||'—'}</div>
       ${c.note?`<div class="muted" style="margin-top:4px">${c.note}</div>`:''}
@@ -1058,7 +1033,6 @@ function renderStore(){
     else if(st.key==='near') chips.push(`<span class="chip near">${st.label}</span>`);
     else if(it.exp) chips.push(`<span class="chip ok">صلاحية ${dmy(it.exp)}</span>`);
     if(lowOne) chips.push(`<span class="chip low">تحت الإعداد</span>`);
-    if(n(it.price)>0) chips.push(`<span class="chip">${money(it.price)}</span>`);
     return `<div class="srow ${cls}">
       <div class="l1">
         <div class="nm"><b>${it.ar||'—'}</b>${it.en?`<i>${it.en}</i>`:''}</div>
@@ -1086,12 +1060,10 @@ function itemMenu(id){
     <div class="muted" style="margin-bottom:14px">الباقي ${fmt(balanceOf(it))} من ${fmt(parOf(it))}${it.exp?' · صلاحية '+dmy(it.exp):''}</div>
     <button class="menuopt" id="imEdit"><span class="ic">✎</span>تعديل الاسم والإعداد والصلاحية</button>
     <button class="menuopt" id="imAdd"><span class="ic">＋</span>إضافة كمية للمخزن</button>
-    <button class="menuopt" id="imPrice"><span class="ic" style="font-size:12px">ج.م</span>سعر الوحدة${n(it.price)>0?' — '+money(it.price):''}</button>
     <button class="menuopt danger" id="imDel"><span class="ic">×</span>حذف الصنف</button>
     <div class="foot"><button class="btn ghost" onclick="closeModal()">إغلاق</button></div>`);
   $('#imEdit').onclick = ()=>{ closeModal(); itemModal(it.id); };
   $('#imAdd').onclick = ()=>{ closeModal(); receiptModal(it.id); };
-  $('#imPrice').onclick = ()=>{ closeModal(); priceSheet(it.id); };
   $('#imDel').onclick = ()=>{
     const used = S.cases.filter(c=>(c.lines||[]).some(l=>l.itemId===it.id)).length;
     if(!confirm(`حذف «${it.ar}»؟` + (used?`\nفيه ${used} حركة صرف فيها الصنف ده، هتتشال منها.`:''))) return;
@@ -1160,24 +1132,6 @@ async function translateAr(ar){
   return '';
 }
 
-
-/* ---------- unit price (kept out of the main form) ---------- */
-function priceSheet(id){
-  const it = S.items.find(x=>x.id===id);
-  if(!it) return;
-  openModal(`
-    <h3>سعر الوحدة — ${it.ar}</h3>
-    <label class="field"><span>سعر الوحدة (ج.م)</span><input type="number" id="p_price" min="0" step="50" inputmode="numeric" value="${n(it.price)}" /></label>
-    <div class="muted" style="margin-bottom:12px">السعر بيستخدم في حساب قيمة المستهلك في الرئيسية والتقارير.</div>
-    <div class="foot">
-      <button class="btn ghost" onclick="closeModal()">إلغاء</button>
-      <button class="btn" id="p_save">حفظ</button>
-    </div>`);
-  $('#p_save').onclick = ()=>{
-    it.price = n($('#p_price').value);
-    save(); closeModal(); renderAll(); toast('تم حفظ السعر');
-  };
-}
 
 /* ---------- add / edit item ---------- */
 function itemModal(id){
@@ -1288,23 +1242,21 @@ function renderReceipts(){
 function renderRep(){
   const from = $('#rFrom').value, to = $('#rTo').value;
   let cases = S.cases.filter(c=>(!from || (c.date||'')>=from) && (!to || (c.date||'')<=to));
-  let total = 0;
+  let totalUsed = 0;
   const rows = S.items.map(it=>{
     const used = usedOf(it.id, from, to);
-    const val = used * n(it.price);
-    total += val;
-    return {it, used, val, bal: balanceOf(it)};
+    totalUsed += used;
+    return {it, used, bal: balanceOf(it)};
   }).filter(r=>r.used>0 || S.items.length<=20);
   const table = $('#repTable');
-  table.innerHTML = `<tr><th>الصنف</th><th>المستخدم</th><th>الباقي</th><th>القيمة</th></tr>` +
+  table.innerHTML = `<tr><th>الصنف</th><th>المستخدم</th><th>الباقي</th></tr>` +
     (rows.length ? rows.map(r=>`<tr>
       <td class="n">${r.it.ar}</td>
       <td>${fmt(r.used)}</td>
       <td>${fmt(r.bal)}</td>
-      <td>${fmt(Math.round(r.val))}</td>
-    </tr>`).join('') : `<tr><td colspan="4" style="padding:16px" class="muted">مفيش بيانات في الفترة دي</td></tr>`);
+    </tr>`).join('') : `<tr><td colspan="3" style="padding:16px" class="muted">مفيش بيانات في الفترة دي</td></tr>`);
   $('#repCases').textContent = cases.length;
-  $('#repTotal').textContent = money(total);
+  $('#repTotal').textContent = fmt(totalUsed);
 }
 $('#rFrom').onchange = renderRep;
 $('#rTo').onchange = renderRep;
@@ -1347,7 +1299,7 @@ renderAll();
 
 /* ---------- auto-update: pull a newer build without reinstalling ---------- */
 (function(){
-  const BUILD = '2026-11-27-9';
+  const BUILD = '2026-11-27-10';
   window.APP_BUILD = BUILD;
   function check(){
     const url = location.pathname + '?_=' + Date.now();
