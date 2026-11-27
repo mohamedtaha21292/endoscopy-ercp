@@ -565,6 +565,13 @@ details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
 .trrow .acts .btn.small{flex:1;min-height:42px;font-size:14px;border-radius:10px;padding:0 8px}
 .btn.small.danger{background:#B3261E;color:#fff}
 
+/* date field: clear calendar affordance (Android Chrome) */
+.datewrap{display:flex;gap:8px;align-items:stretch}
+.datewrap input[type=date]{flex:1;min-width:0;min-height:48px;font-size:16px;direction:ltr;text-align:right}
+.datebtn{flex:0 0 48px;min-height:48px;border:1px solid #CFE3E0;background:#EAF4F3;color:var(--petrol);
+  border-radius:11px;display:flex;align-items:center;justify-content:center}
+.fhint{display:block;font-size:11.5px;color:var(--grey);margin-top:5px;line-height:1.4}
+
 @media print{ .screen:not(.on){display:none!important} .credit{display:none} }
 </style>
 </head>
@@ -1235,16 +1242,33 @@ function itemModal(id){
     <div class="muted" id="f_trhint" style="margin:-6px 0 10px;min-height:18px"></div>
     <div class="grid2">
       <label class="field"><span>الإعداد الثابت</span><input type="number" id="f_par" min="0" step="1" inputmode="numeric" value="${parOf(it)}" /></label>
-      <label class="field"><span>تاريخ الصلاحية</span><input type="date" id="f_exp" value="${it.exp||''}" /></label>
+      <div class="field">
+        <span>تاريخ الصلاحية</span>
+        <div class="datewrap">
+          <input type="date" id="f_exp" value="${it.exp||''}" lang="en-GB" dir="ltr" inputmode="none" />
+          <button type="button" class="datebtn" id="f_exp_btn" aria-label="فتح التقويم">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+          </button>
+        </div>
+        <small class="fhint">دوس على التقويم واختار التاريخ — يوم/شهر/سنة</small>
+      </div>
     </div>
     <div class="grid2">
-      <label class="field"><span>الكمية الابتدائية</span><input type="number" id="f_opening" min="0" step="1" inputmode="numeric" value="${n(it.opening)}" /></label>
+      <label class="field"><span>الكمية الحالية</span><input type="number" id="f_opening" min="0" step="1" inputmode="numeric" value="${id ? balanceOf(it) : n(it.opening)}" /></label>
       <label class="field"><span>الوحدة</span><select id="f_unit">${UNITS.map(u=>`<option ${u===it.unit?'selected':''}>${u}</option>`).join('')}</select></label>
     </div>
     <div class="foot">
       <button class="btn ghost" onclick="closeModal()">إلغاء</button>
       <button class="btn" id="f_save">حفظ</button>
     </div>`);
+
+  const expEl = $('#f_exp'), expBtn = $('#f_exp_btn');
+  if(expBtn && expEl){
+    expBtn.onclick = ()=>{
+      try{ if(typeof expEl.showPicker === 'function') expEl.showPicker(); else expEl.focus(); }
+      catch(e){ expEl.focus(); }
+    };
+  }
 
   /* auto-translate Arabic name → English */
   const arEl = $('#f_ar'), enEl = $('#f_en'), hint = $('#f_trhint');
@@ -1271,8 +1295,11 @@ function itemModal(id){
     if(!ar){ toast('اكتب اسم الصنف'); return; }
     let en = $('#f_en').value.trim();
     if(!en){ en = await translateAr(ar); if(en) $('#f_en').value = en; }
+    const shownQty = Math.max(0, n($('#f_opening').value));
+    const opening = it.id ? (shownQty - receivedOf(it.id) + usedOf(it.id)) : shownQty;
+    if(it.id && opening < 0){ toast('الكمية الحالية أقل من الصرف المسجل — راجعها'); return; }
     const rec = {id: it.id || uid(), ar, en, unit:$('#f_unit').value,
-      opening:n($('#f_opening').value), par:n($('#f_par').value), min:0, exp:$('#f_exp').value,
+      opening, par:n($('#f_par').value), min:0, exp:$('#f_exp').value,
       price:n(it.price), note:it.note||''};
     if(it.id){ const i = S.items.findIndex(x=>x.id===it.id); S.items[i] = rec; }
     else S.items.push(rec);
@@ -1420,7 +1447,7 @@ renderAll();
 
 /* ---------- auto-update: pull a newer build without reinstalling ---------- */
 (function(){
-  const BUILD = '2026-11-27-13';
+  const BUILD = '2026-11-27-14';
   window.APP_BUILD = BUILD;
   function check(){
     const url = location.pathname + '?_=' + Date.now();
