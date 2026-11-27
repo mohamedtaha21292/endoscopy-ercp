@@ -992,6 +992,31 @@ renderAll();
   const h = (location.hash||'').replace('#','');
   if(['home','cases','store','rep'].includes(h)) showScreen(h);
 })();
+
+/* ---------- auto-update: pull a newer build without reinstalling ---------- */
+(function(){
+  const BUILD = '2026-11-27-4';
+  window.APP_BUILD = BUILD;
+  function check(){
+    const url = location.pathname + '?_=' + Date.now();
+    fetch(url, {cache:'no-store'}).then(r=>r.ok?r.text():null).then(t=>{
+      if(!t) return;
+      const m = t.match(/const BUILD = '([^']+)'/);
+      if(!m || m[1]===BUILD) return;
+      if(sessionStorage.getItem('ercp_reload')===m[1]) return;
+      try{ sessionStorage.setItem('ercp_reload', m[1]); }catch(e){}
+      location.replace(location.pathname + '?v=' + encodeURIComponent(m[1]));
+    }).catch(()=>{});
+  }
+  const go = ()=>setTimeout(check, 1000);
+  if(document.readyState==='complete') go(); else window.addEventListener('load', go);
+  let last = 0;
+  const maybe = ()=>{ const now = Date.now(); if(now-last < 15000) return; last = now; check(); };
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) maybe(); });
+  window.addEventListener('focus', maybe);
+  setInterval(()=>{ if(!document.hidden) maybe(); }, 300000);
+})();
+
 </script>
 </body>
-  </html>
+</html>
