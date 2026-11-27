@@ -572,6 +572,14 @@ details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
   border-radius:11px;display:flex;align-items:center;justify-content:center}
 .fhint{display:block;font-size:11.5px;color:var(--grey);margin-top:5px;line-height:1.4}
 
+/* three-select date field (RTL safe) */
+.dsel{display:grid;grid-template-columns:0.9fr 1.5fr 1fr;gap:6px;direction:rtl}
+.dsel label{display:block;min-width:0}
+.dsel label span{display:block;font-size:11px;color:var(--grey);margin-bottom:3px;text-align:center}
+.dsel select{width:100%;min-height:46px;padding:8px 6px;font-size:15px;border-radius:10px;
+  border:1px solid #CFE3E0;background:var(--input);text-align:center;text-align-last:center}
+#s-rep .dsel select{min-height:44px;font-size:14px}
+
 @media print{ .screen:not(.on){display:none!important} .credit{display:none} }
 </style>
 </head>
@@ -685,10 +693,8 @@ details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
     <button class="icobtn" id="repPrint">طباعة</button>
   </div>
   <div class="panel">
-    <div class="grid2">
-      <label class="field" style="margin:0"><span>من تاريخ</span><input type="date" id="rFrom" /></label>
-      <label class="field" style="margin:0"><span>إلى تاريخ</span><input type="date" id="rTo" /></label>
-    </div>
+    <div class="field" style="margin:0 0 10px"><span>من تاريخ</span><div id="rFromBox"></div></div>
+    <div class="field" style="margin:0"><span>إلى تاريخ</span><div id="rToBox"></div></div>
     <button class="btn ghost small" id="repClear" style="width:100%;margin-top:10px">كل الفترة</button>
   </div>
   <div class="panel" style="padding:0;overflow:auto"><table class="rep" id="repTable"></table></div>
@@ -768,6 +774,38 @@ function load(){
   }catch(e){ return seedState(); }
 }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ toast('مساحة التخزين مش كفاية'); } }
+
+
+/* ---------- date picker: three selects, safe in RTL (no native date input) ---------- */
+const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+function datePickHtml(id, iso){
+  const p = (iso||'').split('-');
+  const y = p[0]||'', m = p[1]||'', d = p[2]||'';
+  const cur = new Date().getFullYear();
+  let years = [];
+  for(let i=cur-3;i<=cur+12;i++) years.push(i);
+  if(y && years.indexOf(Number(y))<0) years.unshift(Number(y));
+  const opt = (v,cur2,label)=>`<option value="${v}" ${String(v)===String(cur2)?'selected':''}>${label}</option>`;
+  return `<div class="dsel">
+    <label><span>يوم</span><select id="${id}_d" dir="ltr">${opt('',d,'—')}${Array.from({length:31},(_,i)=>i+1).map(v=>opt(v,Number(d),v)).join('')}</select></label>
+    <label><span>شهر</span><select id="${id}_m" dir="ltr">${opt('',m,'—')}${MONTHS_AR.map((nm,i)=>opt(i+1,Number(m),String(i+1).padStart(2,'0')+' '+nm)).join('')}</select></label>
+    <label><span>سنة</span><select id="${id}_y" dir="ltr">${opt('',y,'—')}${years.map(v=>opt(v,Number(y),v)).join('')}</select></label>
+  </div>`;
+}
+function datePickRead(id){
+  const g = k=>{ const el=document.getElementById(id+'_'+k); return el?el.value:''; };
+  const d = Number(g('d')), m = Number(g('m')), y = Number(g('y'));
+  if(!d || !m || !y) return '';
+  const max = new Date(y, m, 0).getDate();
+  const dd = Math.min(d, max);
+  return y+'-'+String(m).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
+}
+function datePickClear(id){
+  ['d','m','y'].forEach(k=>{ const el=document.getElementById(id+'_'+k); if(el) el.value=''; });
+}
+function datePickBind(id, fn){
+  ['d','m','y'].forEach(k=>{ const el=document.getElementById(id+'_'+k); if(el) el.onchange=fn; });
+}
 
 /* ---------- helpers ---------- */
 const $ = s=>document.querySelector(s);
@@ -1062,7 +1100,7 @@ function caseModal(id){
   const nextNo = S.cases.reduce((m,x)=>Math.max(m, n(x.no)), 0) + 1;
   openModal(`
     <h3>${id?('تعديل صرف '+dmy(c.date)):'تسجيل صرف جديد'}</h3>
-    <label class="field"><span>التاريخ</span><input type="date" id="c_date" value="${c.date||''}" /></label>
+    <div class="field"><span>التاريخ</span>${datePickHtml('c_date', c.date||todayISO())}</div>
     <div class="field" style="margin-bottom:6px"><span>الأصناف اللي اتاخدت</span></div>
     <div id="lines">${(c.lines||[]).map(l=>lineRowHtml(l.itemId, l.qty)).join('')}</div>
     <button class="addline" id="addLine">＋ إضافة صنف</button>
@@ -1076,7 +1114,7 @@ function caseModal(id){
   bind();
   $('#addLine').onclick = ()=>{ linesBox.insertAdjacentHTML('beforeend', lineRowHtml('', '')); bind(); };
   $('#c_save').onclick = ()=>{
-    const date = $('#c_date').value;
+    const date = datePickRead('c_date');
     if(!date){ toast('اكتب التاريخ'); return; }
     const lines = [];
     let problem = null;
@@ -1241,34 +1279,19 @@ function itemModal(id){
     <label class="field"><span>الاسم بالإنجليزي</span><input id="f_en" value="${(it.en||'').replace(/"/g,'&quot;')}" placeholder="بيتكتب لوحده" /></label>
     <div class="muted" id="f_trhint" style="margin:-6px 0 10px;min-height:18px"></div>
     <div class="grid2">
-      <label class="field"><span>الإعداد الثابت</span><input type="number" id="f_par" min="0" step="1" inputmode="numeric" value="${parOf(it)}" /></label>
-      <div class="field">
-        <span>تاريخ الصلاحية</span>
-        <div class="datewrap">
-          <input type="date" id="f_exp" value="${it.exp||''}" lang="en-GB" dir="ltr" inputmode="none" />
-          <button type="button" class="datebtn" id="f_exp_btn" aria-label="فتح التقويم">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
-          </button>
-        </div>
-        <small class="fhint">دوس على التقويم واختار التاريخ — يوم/شهر/سنة</small>
-      </div>
-    </div>
-    <div class="grid2">
       <label class="field"><span>الكمية الحالية</span><input type="number" id="f_opening" min="0" step="1" inputmode="numeric" value="${id ? balanceOf(it) : n(it.opening)}" /></label>
-      <label class="field"><span>الوحدة</span><select id="f_unit">${UNITS.map(u=>`<option ${u===it.unit?'selected':''}>${u}</option>`).join('')}</select></label>
+      <label class="field"><span>الإعداد الثابت</span><input type="number" id="f_par" min="0" step="1" inputmode="numeric" value="${parOf(it)}" /></label>
+    </div>
+    <label class="field"><span>الوحدة</span><select id="f_unit">${UNITS.map(u=>`<option ${u===it.unit?'selected':''}>${u}</option>`).join('')}</select></label>
+    <div class="field">
+      <span>تاريخ الصلاحية (اختياري)</span>
+      ${datePickHtml('f_exp', it.exp||'')}
+      <small class="fhint">اختار يوم وشهر وسنة — سيبها فاضية لو مفيش تاريخ صلاحية</small>
     </div>
     <div class="foot">
       <button class="btn ghost" onclick="closeModal()">إلغاء</button>
       <button class="btn" id="f_save">حفظ</button>
     </div>`);
-
-  const expEl = $('#f_exp'), expBtn = $('#f_exp_btn');
-  if(expBtn && expEl){
-    expBtn.onclick = ()=>{
-      try{ if(typeof expEl.showPicker === 'function') expEl.showPicker(); else expEl.focus(); }
-      catch(e){ expEl.focus(); }
-    };
-  }
 
   /* auto-translate Arabic name → English */
   const arEl = $('#f_ar'), enEl = $('#f_en'), hint = $('#f_trhint');
@@ -1299,7 +1322,7 @@ function itemModal(id){
     const opening = it.id ? (shownQty - receivedOf(it.id) + usedOf(it.id)) : shownQty;
     if(it.id && opening < 0){ toast('الكمية الحالية أقل من الصرف المسجل — راجعها'); return; }
     const rec = {id: it.id || uid(), ar, en, unit:$('#f_unit').value,
-      opening, par:n($('#f_par').value), min:0, exp:$('#f_exp').value,
+      opening, par:n($('#f_par').value), min:0, exp:datePickRead('f_exp'),
       price:n(it.price), note:it.note||''};
     if(it.id){ const i = S.items.findIndex(x=>x.id===it.id); S.items[i] = rec; }
     else S.items.push(rec);
@@ -1346,10 +1369,10 @@ function receiptModal(itemId){
     <h3>إضافة كمية — ${it.ar}</h3>
     <div class="muted" style="margin-bottom:12px">الباقي حاليًا: <b style="color:var(--petrol-d)">${fmt(balanceOf(it))}</b> ${it.unit||''} · الإعداد الثابت: ${fmt(parOf(it))}</div>
     <div class="grid2">
-      <label class="field"><span>تاريخ الإضافة</span><input type="date" id="r_date" value="${todayISO()}" /></label>
+      <div class="field"><span>تاريخ الإضافة</span>${datePickHtml('r_date', todayISO())}</div>
       <label class="field"><span>الكمية المضافة</span><input type="number" id="r_qty" min="1" step="1" inputmode="numeric" placeholder="0" /></label>
     </div>
-    <label class="field"><span>صلاحية الدفعة الجديدة (اختياري)</span><input type="date" id="r_exp" value="${it.exp||''}" /></label>
+    <div class="field"><span>صلاحية الدفعة الجديدة (اختياري)</span>${datePickHtml('r_exp', it.exp||'')}</div>
     <label class="field"><span>ملاحظات (اختياري)</span><input id="r_note" placeholder="مصدر / رقم إيصال" /></label>
     <div class="foot">
       <button class="btn ghost" onclick="closeModal()">إلغاء</button>
@@ -1358,9 +1381,9 @@ function receiptModal(itemId){
   $('#r_save').onclick = ()=>{
     const qty = n($('#r_qty').value);
     if(qty<=0){ toast('اكتب كمية أكبر من صفر'); return; }
-    const exp = $('#r_exp').value || '';
+    const exp = datePickRead('r_exp');
     S.receipts = S.receipts || [];
-    S.receipts.push({id:uid(), itemId, date:$('#r_date').value||todayISO(), qty, exp, note:$('#r_note').value.trim()});
+    S.receipts.push({id:uid(), itemId, date:datePickRead('r_date')||todayISO(), qty, exp, note:$('#r_note').value.trim()});
     if(exp) it.exp = exp;
     save(); closeModal(); renderAll();
     toast('تمت إضافة '+fmt(qty)+' — الباقي '+fmt(balanceOf(it)));
@@ -1388,7 +1411,7 @@ function renderReceipts(){
 
 /* ---------- reports ---------- */
 function renderRep(){
-  const from = $('#rFrom').value, to = $('#rTo').value;
+  const from = datePickRead('rFrom'), to = datePickRead('rTo');
   let cases = S.cases.filter(c=>(!from || (c.date||'')>=from) && (!to || (c.date||'')<=to));
   let totalUsed = 0;
   const rows = S.items.map(it=>{
@@ -1406,9 +1429,14 @@ function renderRep(){
   $('#repCases').textContent = cases.length;
   $('#repTotal').textContent = fmt(totalUsed);
 }
-$('#rFrom').onchange = renderRep;
-$('#rTo').onchange = renderRep;
-$('#repClear').onclick = ()=>{ $('#rFrom').value=''; $('#rTo').value=''; renderRep(); };
+(function(){
+  const fb = $('#rFromBox'), tb = $('#rToBox');
+  if(fb) fb.innerHTML = datePickHtml('rFrom','');
+  if(tb) tb.innerHTML = datePickHtml('rTo','');
+})();
+datePickBind('rFrom', renderRep);
+datePickBind('rTo', renderRep);
+$('#repClear').onclick = ()=>{ datePickClear('rFrom'); datePickClear('rTo'); renderRep(); };
 $('#repPrint').onclick = ()=>{ window.print(); };
 
 /* ---------- backup ---------- */
@@ -1447,7 +1475,7 @@ renderAll();
 
 /* ---------- auto-update: pull a newer build without reinstalling ---------- */
 (function(){
-  const BUILD = '2026-11-27-14';
+  const BUILD = '2026-11-27-15';
   window.APP_BUILD = BUILD;
   function check(){
     const url = location.pathname + '?_=' + Date.now();
