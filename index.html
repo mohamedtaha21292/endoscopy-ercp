@@ -517,6 +517,24 @@ details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
 .credit .bar .r{font-size:11.5px}
 .toast{font-size:14px;padding:12px 18px}
 
+/* tappable KPI cards */
+.kpis4 .k{cursor:pointer;position:relative}
+.kpis4 .k:active{transform:scale(.985)}
+.kpis4 .k span{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.kpis4 .k .ch{font-style:normal;font-size:19px;opacity:.8;line-height:1}
+/* detail rows */
+.krow{display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid #E3EFED}
+.krow:first-child{border-top:0}
+.krow .nm{flex:1;min-width:0}
+.krow .nm b{display:block;font-size:16.5px;font-weight:800;color:var(--petrol-d);line-height:1.3}
+.krow .nm i{display:block;font-style:normal;font-size:12.5px;color:var(--grey);margin-top:2px}
+.krow .v{text-align:center;min-width:70px}
+.krow .v b{display:block;font-size:20px;font-weight:800;color:var(--petrol-d);line-height:1.1}
+.krow .v span{font-size:11.5px;color:var(--grey)}
+.ktot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:14px;
+  border-top:2px solid #E3EFED;font-size:15px;color:var(--grey)}
+.ktot b{font-size:19px;color:var(--petrol-d)}
+
 @media print{ .screen:not(.on){display:none!important} .credit{display:none} }
 </style>
 </head>
@@ -574,6 +592,15 @@ details.steps div{margin-top:8px;font-size:13.5px;line-height:1.8}
     <div class="tt">التنبيهات<small id="alertCount">—</small></div>
   </div>
   <div class="panel" style="padding:4px 16px"><div id="alertList"></div></div>
+</div>
+
+<!-- ===== KPI DETAIL ===== -->
+<div class="screen" id="s-kpi">
+  <div class="topbar">
+    <button class="icobtn" data-go="home">‹ رجوع</button>
+    <div class="tt"><span id="kpiTitle">—</span><small id="kpiSub"></small></div>
+  </div>
+  <div class="panel" id="kpiBody"></div>
 </div>
 
 <!-- ===== CASES ===== -->
@@ -772,13 +799,14 @@ function renderHome(){
   const {exp,near,low} = alertCounts();
   const noPrices = items.length>0 && items.every(i=>n(i.price)===0);
   const kpis = [
-    [S.cases.length, 'عملية صرف', ''],
-    [usedQty, 'أداة مستخدمة', ''],
-    [noPrices ? '—' : fmt(Math.round(value)), noPrices ? 'قيمة المستهلك' : 'قيمة المستهلك (ج.م)', ''],
-    [low, 'صنف تحت الإعداد', low?'alert':'']
+    [S.cases.length, 'عملية صرف', '', 'cases'],
+    [usedQty, 'أداة مستخدمة', '', 'used'],
+    [low, 'صنف تحت الإعداد', low?'alert':'', 'low'],
+    [noPrices ? '—' : fmt(Math.round(value)), 'قيمة المستهلك', '', 'value']
   ];
-  $('#kpis').innerHTML = kpis.map(([v,l,c])=>
-    `<div class="k ${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+  $('#kpis').innerHTML = kpis.map(([v,l,c,k])=>
+    `<div class="k ${c}" data-kpi="${k}" role="button"><b>${v}</b><span>${l}<i class="ch">›</i></span></div>`).join('');
+  $('#kpis').querySelectorAll('[data-kpi]').forEach(el=>{ el.onclick = ()=>showKpi(el.dataset.kpi); });
 
   const st = $('#hstat');
   let cls='ok', ic='✓', t='المخزن سليم', sub='مفيش تنبيهات — كل الأصناف فوق الإعداد الثابت.';
@@ -823,6 +851,65 @@ function renderAlerts(){
   if(low) parts.push(fmt(low)+' تحت الإعداد');
   const c = $('#alertCount');
   if(c) c.textContent = parts.length ? parts.join(' · ') : 'كله سليم';
+}
+
+/* ---------- KPI detail screens ---------- */
+function kpiHead(title, sub){
+  const t = $('#kpiTitle'), sb = $('#kpiSub');
+  if(t) t.textContent = title;
+  if(sb) sb.textContent = sub || '';
+}
+function showKpi(kind){
+  if(kind==='cases'){ showScreen('cases'); return; }
+  showScreen('kpi');
+  const body = $('#kpiBody');
+  if(kind==='used'){
+    kpiHead('الأصناف المستخدمة', 'إجمالي كل الفترات');
+    const rows = S.items.map(it=>{
+      const used = usedOf(it.id);
+      const last = S.cases.filter(c=>(c.lines||[]).some(l=>l.itemId===it.id))
+        .map(c=>c.date||'').sort().pop() || '';
+      return {it, used, last};
+    }).filter(r=>r.used>0).sort((a,b)=>b.used-a.used);
+    const total = rows.reduce((s,r)=>s+r.used,0);
+    body.innerHTML = rows.length ? rows.map(r=>
+      `<div class="krow"><div class="nm"><b>${r.it.ar}</b><i>آخر صرف ${r.last?dmy(r.last):'—'}</i></div>
+        <div class="v"><b>${fmt(r.used)}</b><span>${r.it.unit||''}</span></div></div>`).join('') +
+      `<div class="ktot"><span>الإجمالي</span><b>${fmt(total)}</b></div>`
+      : '<div class="muted" style="text-align:center;padding:18px 0">مفيش صرف مسجل لسه.</div>';
+    return;
+  }
+  if(kind==='low'){
+    kpiHead('أصناف تحت الإعداد الثابت', 'الباقي أقل من الرقم المطلوب');
+    const rows = S.items.filter(it=>parOf(it)>0 && balanceOf(it)<parOf(it))
+      .sort((a,b)=>(balanceOf(a)-parOf(a))-(balanceOf(b)-parOf(b)));
+    body.innerHTML = rows.length ? rows.map(it=>{
+      const bal = balanceOf(it), par = parOf(it);
+      return `<div class="krow"><div class="nm"><b>${it.ar}</b><i>الناقص ${fmt(Math.max(0,par-bal))} ${it.unit||''}</i></div>
+        <div class="v"><b>${fmt(bal)}</b><span>من ${fmt(par)}</span></div></div>`;
+    }).join('') : '<div class="muted" style="text-align:center;padding:18px 0">كل الأصناف فوق الإعداد الثابت.</div>';
+    return;
+  }
+  if(kind==='value'){
+    kpiHead('قيمة المستهلك', 'المصروف × سعر الوحدة');
+    const rows = S.items.map(it=>{
+      const used = usedOf(it.id);
+      return {it, used, val: used * n(it.price)};
+    }).filter(r=>r.used>0).sort((a,b)=>b.val-a.val);
+    const priced = rows.filter(r=>n(r.it.price)>0);
+    const total = rows.reduce((s,r)=>s+r.val,0);
+    if(!priced.length){
+      body.innerHTML = `<div class="muted" style="text-align:center;padding:10px 0 16px">مفيش سعر مسجل للأصناف، فمش ممكن نحسب القيمة.</div>
+        <button class="btn" id="kpiGoStore" style="width:100%">افتح المخزن — السعر من ⋮ جنب الصنف</button>`;
+      $('#kpiGoStore').onclick = ()=>showScreen('store');
+      return;
+    }
+    body.innerHTML = rows.map(r=>
+      `<div class="krow"><div class="nm"><b>${r.it.ar}</b><i>${fmt(r.used)} × ${money(r.it.price)}</i></div>
+        <div class="v"><b>${fmt(Math.round(r.val))}</b><span>ج.م</span></div></div>`).join('') +
+      `<div class="ktot"><span>الإجمالي</span><b>${money(total)}</b></div>`;
+    return;
+  }
 }
 
 /* ---------- more / settings sheet ---------- */
@@ -999,16 +1086,96 @@ function itemMenu(id){
     <div class="muted" style="margin-bottom:14px">الباقي ${fmt(balanceOf(it))} من ${fmt(parOf(it))}${it.exp?' · صلاحية '+dmy(it.exp):''}</div>
     <button class="menuopt" id="imEdit"><span class="ic">✎</span>تعديل الاسم والإعداد والصلاحية</button>
     <button class="menuopt" id="imAdd"><span class="ic">＋</span>إضافة كمية للمخزن</button>
+    <button class="menuopt" id="imPrice"><span class="ic" style="font-size:12px">ج.م</span>سعر الوحدة${n(it.price)>0?' — '+money(it.price):''}</button>
     <button class="menuopt danger" id="imDel"><span class="ic">×</span>حذف الصنف</button>
     <div class="foot"><button class="btn ghost" onclick="closeModal()">إغلاق</button></div>`);
   $('#imEdit').onclick = ()=>{ closeModal(); itemModal(it.id); };
   $('#imAdd').onclick = ()=>{ closeModal(); receiptModal(it.id); };
+  $('#imPrice').onclick = ()=>{ closeModal(); priceSheet(it.id); };
   $('#imDel').onclick = ()=>{
     const used = S.cases.filter(c=>(c.lines||[]).some(l=>l.itemId===it.id)).length;
     if(!confirm(`حذف «${it.ar}»؟` + (used?`\nفيه ${used} حركة صرف فيها الصنف ده، هتتشال منها.`:''))) return;
     S.items = S.items.filter(x=>x.id!==it.id);
     S.cases.forEach(c=>{ c.lines = (c.lines||[]).filter(l=>l.itemId!==it.id); });
     save(); closeModal(); renderAll(); toast('تم حذف الصنف');
+  };
+}
+
+/* ---------- Arabic → English auto translation (free, no login) ---------- */
+const TR_CACHE_KEY = 'ercp-tr-v1';
+const TR_LOCAL = {
+ 'جفت استخراج جسم غريب':'Foreign Body Forceps',
+ 'وصلة أرجون':'Argon Probe',
+ 'وصلة أرجون (٢)':'Argon Probe 2',
+ 'بالون توسيع مقاسات':'Dilation Balloon (sizes)',
+ 'مدخل دعامات':'Stent Delivery System',
+ 'بالون استخراج حصوات':'Extraction Balloon',
+ 'سكينة شق قنوات مرارية':'Needle Knife',
+ 'سلك قاطع قنوات مرارية':'Sphincterotome Wire',
+ 'شبكة تفتيت حصوات':'Stone Crushing Basket',
+ 'دعامة بلاستيك مقاسات':'Plastic Stent (sizes)',
+ 'كليبس مانع للنزيف':'Hemoclip',
+ 'أنبوبة تغذية معدة':'Feeding Tube',
+ 'سلك مرشد سفاري 25':'Guidewire Safari 25',
+ 'سلك مرشد سفاري 35':'Guidewire Safari 35',
+ 'إبرة حقن قولون':'Injection Needle (Colon)',
+ 'إبرة حقن معدة':'Injection Needle (Stomach)',
+ 'جفت استئصال زوائد لحمية':'Polypectomy Snare',
+ 'جهاز تفتيت حصوات':'Lithotripsy Device',
+ 'قسطرة تلوين القناة المرارية':'Cholangiogram Catheter',
+ 'بالونة توسيع أكليزيا':'Achalasia Balloon',
+ 'منظار':'Endoscope','قنوات مرارية':'Bile Ducts','حصوات':'Stones','دعامة':'Stent',
+ 'بالون':'Balloon','سلك':'Wire','إبرة':'Needle','جفت':'Forceps','كليبس':'Clip',
+ 'صلاحية':'Expiry','قطعة':'Piece','علبة':'Box','باكو':'Pack','زوج':'Pair','لتر':'Liter','أنبوبة':'Tube','عبوة':'Pack'
+};
+function trGet(){ try{ return JSON.parse(localStorage.getItem(TR_CACHE_KEY)||'{}'); }catch(e){ return {}; } }
+function trPut(a,e){ try{ const c=trGet(); c[a]=e; localStorage.setItem(TR_CACHE_KEY, JSON.stringify(c)); }catch(e){} }
+function trClean(s){
+  return String(s||'').replace(/\s+/g,' ').trim().replace(/^["'«»]+|["'«»]+$/g,'')
+    .split(' ').map(w=> w ? w.charAt(0).toUpperCase()+w.slice(1) : w).join(' ');
+}
+async function translateAr(ar){
+  const key = String(ar||'').replace(/\s+/g,' ').trim();
+  if(!key) return '';
+  const c = trGet(); if(c[key]) return c[key];
+  if(TR_LOCAL[key]){ trPut(key, TR_LOCAL[key]); return TR_LOCAL[key]; }
+  try{
+    const r = await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(key)+'&langpair=ar%7Cen', {cache:'no-store'});
+    if(r.ok){
+      const j = await r.json();
+      const t = (j && j.responseData && j.responseData.translatedText) || '';
+      if(t && !/MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID/i.test(t)){
+        const out = trClean(t); trPut(key,out); return out;
+      }
+    }
+  }catch(e){}
+  try{
+    const r2 = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=en&dt=t&q='+encodeURIComponent(key), {cache:'no-store'});
+    if(r2.ok){
+      const j2 = await r2.json();
+      const t2 = ((j2 && j2[0]) || []).map(x=>x&&x[0]?x[0]:'').join('').trim();
+      if(t2){ const out = trClean(t2); trPut(key,out); return out; }
+    }
+  }catch(e){}
+  return '';
+}
+
+
+/* ---------- unit price (kept out of the main form) ---------- */
+function priceSheet(id){
+  const it = S.items.find(x=>x.id===id);
+  if(!it) return;
+  openModal(`
+    <h3>سعر الوحدة — ${it.ar}</h3>
+    <label class="field"><span>سعر الوحدة (ج.م)</span><input type="number" id="p_price" min="0" step="50" inputmode="numeric" value="${n(it.price)}" /></label>
+    <div class="muted" style="margin-bottom:12px">السعر بيستخدم في حساب قيمة المستهلك في الرئيسية والتقارير.</div>
+    <div class="foot">
+      <button class="btn ghost" onclick="closeModal()">إلغاء</button>
+      <button class="btn" id="p_save">حفظ</button>
+    </div>`);
+  $('#p_save').onclick = ()=>{
+    it.price = n($('#p_price').value);
+    save(); closeModal(); renderAll(); toast('تم حفظ السعر');
   };
 }
 
@@ -1019,30 +1186,49 @@ function itemModal(id){
   openModal(`
     <h3>${id?'تعديل الصنف':'صنف جديد'}</h3>
     <label class="field"><span>اسم الصنف (عربي)</span><input id="f_ar" value="${(it.ar||'').replace(/"/g,'&quot;')}" placeholder="مثال: وصلة أرجون" /></label>
-    <label class="field"><span>الاسم بالإنجليزي (اختياري)</span><input id="f_en" value="${(it.en||'').replace(/"/g,'&quot;')}" /></label>
+    <label class="field"><span>الاسم بالإنجليزي</span><input id="f_en" value="${(it.en||'').replace(/"/g,'&quot;')}" placeholder="بيتكتب لوحده" /></label>
+    <div class="muted" id="f_trhint" style="margin:-6px 0 10px;min-height:18px"></div>
     <div class="grid2">
       <label class="field"><span>الإعداد الثابت</span><input type="number" id="f_par" min="0" step="1" inputmode="numeric" value="${parOf(it)}" /></label>
-      <label class="field"><span>${id?'تاريخ الصلاحية':'تاريخ الصلاحية (اختياري)'}</span><input type="date" id="f_exp" value="${it.exp||''}" /></label>
+      <label class="field"><span>تاريخ الصلاحية</span><input type="date" id="f_exp" value="${it.exp||''}" /></label>
     </div>
     <div class="grid2">
-      <label class="field"><span>${id?'الكمية الابتدائية':'الكمية الابتدائية'}</span><input type="number" id="f_opening" min="0" step="1" inputmode="numeric" value="${n(it.opening)}" /></label>
+      <label class="field"><span>الكمية الابتدائية</span><input type="number" id="f_opening" min="0" step="1" inputmode="numeric" value="${n(it.opening)}" /></label>
       <label class="field"><span>الوحدة</span><select id="f_unit">${UNITS.map(u=>`<option ${u===it.unit?'selected':''}>${u}</option>`).join('')}</select></label>
     </div>
-    <div class="grid2">
-      <label class="field"><span>سعر الوحدة (ج.م)</span><input type="number" id="f_price" min="0" step="50" inputmode="numeric" value="${n(it.price)}" /></label>
-      <label class="field"><span>ملاحظات</span><input id="f_note" value="${(it.note||'').replace(/"/g,'&quot;')}" /></label>
-    </div>
-    <div class="muted" style="margin-bottom:10px">الإعداد الثابت = الرقم اللي لازم يفضل في المخزن. الباقي = الكمية الابتدائية + الإضافات − المصروف.</div>
     <div class="foot">
       <button class="btn ghost" onclick="closeModal()">إلغاء</button>
       <button class="btn" id="f_save">حفظ</button>
     </div>`);
-  $('#f_save').onclick = ()=>{
+
+  /* auto-translate Arabic name → English */
+  const arEl = $('#f_ar'), enEl = $('#f_en'), hint = $('#f_trhint');
+  let enTouched = false, timer = null, seq = 0;
+  enEl.addEventListener('input', ()=>{ enTouched = enEl.value.trim().length>0; });
+  arEl.addEventListener('input', ()=>{
+    if(enTouched) return;
+    clearTimeout(timer);
+    const v = arEl.value.trim();
+    if(v.length < 3){ return; }
+    timer = setTimeout(async ()=>{
+      const my = ++seq;
+      hint.textContent = 'بيترجم الاسم…';
+      const out = await translateAr(v);
+      if(my !== seq) return;
+      if(out && !enTouched){ enEl.value = out; hint.textContent = ''; }
+      else if(!out){ hint.textContent = 'مش قادر يترجم دلوقتي — اكتبه بنفسك'; }
+      else { hint.textContent = ''; }
+    }, 800);
+  });
+
+  $('#f_save').onclick = async ()=>{
     const ar = $('#f_ar').value.trim();
     if(!ar){ toast('اكتب اسم الصنف'); return; }
-    const rec = {id: it.id || uid(), ar, en:$('#f_en').value.trim(), unit:$('#f_unit').value,
+    let en = $('#f_en').value.trim();
+    if(!en){ en = await translateAr(ar); if(en) $('#f_en').value = en; }
+    const rec = {id: it.id || uid(), ar, en, unit:$('#f_unit').value,
       opening:n($('#f_opening').value), par:n($('#f_par').value), min:0, exp:$('#f_exp').value,
-      price:n($('#f_price').value), note:$('#f_note').value.trim()};
+      price:n(it.price), note:it.note||''};
     if(it.id){ const i = S.items.findIndex(x=>x.id===it.id); S.items[i] = rec; }
     else S.items.push(rec);
     save(); closeModal(); renderAll(); toast(id?'تم تعديل الصنف':'تمت إضافة الصنف');
@@ -1161,7 +1347,7 @@ renderAll();
 
 /* ---------- auto-update: pull a newer build without reinstalling ---------- */
 (function(){
-  const BUILD = '2026-11-27-7';
+  const BUILD = '2026-11-27-9';
   window.APP_BUILD = BUILD;
   function check(){
     const url = location.pathname + '?_=' + Date.now();
